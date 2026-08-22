@@ -5,7 +5,7 @@ import { apiClient } from './apiClient';
 const STORAGE_KEY_USERS_DB = 'globetrotter_users_db';
 const STORAGE_KEY_SESSION_USER_ID = 'globetrotter_session_user_id';
 
-// Pre-seeded isolated test users
+// Pre-seeded test users
 export const PRESEEDED_USERS: Record<string, User> = {
   'usr-rahul': {
     id: 'usr-rahul',
@@ -50,12 +50,9 @@ function saveUsersDB(db: Record<string, User>): void {
   localStorage.setItem(STORAGE_KEY_USERS_DB, JSON.stringify(db));
 }
 
-export function getCurrentUserIdFromSession(): string {
-  const currentId = localStorage.getItem(STORAGE_KEY_SESSION_USER_ID);
-  if (currentId) return currentId;
-  // Default to Rahul if no session set
-  localStorage.setItem(STORAGE_KEY_SESSION_USER_ID, 'usr-rahul');
-  return 'usr-rahul';
+// Returns session User ID or NULL if no active session
+export function getCurrentUserIdFromSession(): string | null {
+  return localStorage.getItem(STORAGE_KEY_SESSION_USER_ID) || null;
 }
 
 export const authService = {
@@ -105,15 +102,16 @@ export const authService = {
     });
   },
 
-  async getCurrentUser(): Promise<User> {
+  async getCurrentUser(): Promise<User | null> {
     return apiClient.get('/auth/me', () => {
-      const db = getUsersDB();
       const currentId = getCurrentUserIdFromSession();
+      if (!currentId) return null;
+
+      const db = getUsersDB();
       const user = db[currentId];
       if (user) return user;
       
-      // Fallback
-      return db['usr-rahul'] || PRESEEDED_USERS['usr-rahul'];
+      return null;
     });
   },
 

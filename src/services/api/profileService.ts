@@ -15,16 +15,19 @@ function saveUsersDB(db: Record<string, User>): void {
 }
 
 export const profileService = {
-  async getProfile(): Promise<User> {
+  async getProfile(): Promise<User | null> {
     return authService.getCurrentUser();
   },
 
   async updateProfile(updates: Partial<User>): Promise<User> {
     return apiClient.put('/user/profile', updates, async () => {
       const currentUserId = getCurrentUserIdFromSession();
+      if (!currentUserId) throw new Error('Unauthorized: Please log in first');
+
       const db = getUsersDB();
       const currentUser = db[currentUserId] || await authService.getCurrentUser();
-      
+      if (!currentUser) throw new Error('User not found');
+
       const updatedUser: User = {
         ...currentUser,
         ...updates,
@@ -43,8 +46,10 @@ export const profileService = {
 
   async toggleSaveCity(cityId: string): Promise<User> {
     const currentUser = await authService.getCurrentUser();
+    if (!currentUser) throw new Error('Unauthorized: Please log in first');
+
     const isSaved = currentUser.savedCityIds.includes(cityId);
-    const newSaved = isSaved 
+    const newSaved = isSaved
       ? currentUser.savedCityIds.filter(id => id !== cityId)
       : [...currentUser.savedCityIds, cityId];
 

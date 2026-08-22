@@ -157,6 +157,7 @@ export const tripsService = {
   async getTrips(): Promise<Trip[]> {
     return apiClient.get('/trips', () => {
       const currentUserId = getCurrentUserIdFromSession();
+      if (!currentUserId) return [];
       const allTrips = getTripsDB();
       return allTrips.filter(t => t.userId === currentUserId);
     });
@@ -165,6 +166,7 @@ export const tripsService = {
   async getTripById(id: string): Promise<Trip | null> {
     return apiClient.get(`/trips/${id}`, () => {
       const currentUserId = getCurrentUserIdFromSession();
+      if (!currentUserId) return null;
       const allTrips = getTripsDB();
       // Allow retrieval if owned by current user OR if public shared trip
       return allTrips.find(t => t.id === id && (t.userId === currentUserId || t.isPublic)) || null;
@@ -174,6 +176,7 @@ export const tripsService = {
   async createTrip(tripData: Omit<Trip, 'id' | 'createdAt' | 'stops' | 'shareToken' | 'userId'>): Promise<Trip> {
     return apiClient.post('/trips', tripData, () => {
       const currentUserId = getCurrentUserIdFromSession();
+      if (!currentUserId) throw new Error('Unauthorized: Please log in first');
       const allTrips = getTripsDB();
       const newTrip: Trip = {
         ...tripData,

@@ -184,9 +184,21 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ setActiveTab }) =>
           </button>
         </div>
 
-        {upcomingTrips.length === 0 ? (
-          <div style={{ padding: '2rem', textAlign: 'center', background: 'var(--bg-card)', borderRadius: 'var(--radius-md)', border: '1px dashed var(--border-color)', color: 'var(--text-muted)' }}>
-            No upcoming trips scheduled. Create a new trip to start planning your itinerary!
+        {trips.length === 0 ? (
+          <div className="glass-card" style={{ padding: '2.5rem 2rem', textAlign: 'center', background: 'var(--bg-card)', borderRadius: 'var(--radius-md)', border: '1.5px dashed var(--border-color)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.85rem' }}>
+            <div style={{ width: '54px', height: '54px', borderRadius: '50%', background: 'var(--primary-light)', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Compass size={28} />
+            </div>
+            <h3 style={{ fontSize: '1.3rem', fontFamily: 'Playfair Display, Georgia, serif', color: 'var(--text-primary)', margin: 0 }}>
+              Your next adventure starts here.
+            </h3>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', maxWidth: '450px', margin: 0 }}>
+              You don't have any saved trips yet. Start planning your personalized travel itinerary!
+            </p>
+            <button onClick={() => setActiveTab('create-trip')} className="btn btn-primary btn-md" style={{ marginTop: '0.5rem' }}>
+              <PlusCircle size={16} />
+              <span>+ Plan Your First Trip</span>
+            </button>
           </div>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem' }}>
