@@ -1,50 +1,48 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;600;700&display=swap');
 
 :root {
-  /* Light Warm Vanilla Travel Aesthetic - Clean, Fresh, Modern */
-  --bg-dark: #FAF9F5;               /* Warm light off-white background */
-  --bg-card: #FFFFFF;               /* Pure crisp warm white surfaces */
+  /* Master Light Vanilla / Ivory / Champagne Travel Palette */
+  --bg-dark: #F7F4EE;               /* Warm vanilla light off-white background */
+  --bg-card: #FFFDF9;               /* Pure ivory warm white surfaces */
   --bg-card-hover: #FFFFFF;
-  --bg-card-solid: #FFFFFF;
-  --bg-input: #F6F4EF;              /* Soft vanilla input tint */
-  --bg-subtle: #F3EFE6;             /* Subtle warm cream panel background */
+  --bg-card-solid: #FFFDF9;
+  --bg-input: #F3EFE6;              /* Soft vanilla input tint */
+  --bg-subtle: #EFE9DE;             /* Soft champagne cream panel background */
 
-  --border-color: #E6E1D7;          /* Soft warm border */
-  --border-color-glow: rgba(184, 91, 61, 0.25);
+  --border-color: #DED6C9;          /* Refined warm border */
+  --border-color-glow: rgba(184, 111, 82, 0.25);
 
-  /* Primary Accent: Refined Muted Terracotta */
-  --primary: #B85B3D;
-  --primary-hover: #9E4A2E;
-  --primary-glow: rgba(184, 91, 61, 0.12);
+  /* Primary Accents: Refined Muted Terracotta, Soft Olive & Champagne */
+  --primary: #B86F52;               /* Muted Terracotta */
+  --primary-hover: #9C573C;
+  --primary-glow: rgba(184, 111, 82, 0.15);
   --primary-light: #F9EFEA;
 
-  /* Earthy Travel Accents (Controlled Secondary Colors) */
+  --accent-olive: #72775F;          /* Earth Olive */
+  --accent-champagne: #C49A5A;      /* Muted Ochre Champagne */
   --accent-teal: #4A7C74;           /* Soft Sage Teal */
-  --accent-sunset: #C86D51;         /* Muted Sienna */
-  --accent-rose: #C94C4C;           /* Terracotta Rose (Danger / Alerts) */
-  --accent-purple: #7E6C8F;         /* Soft Lavender Dusk */
-  --accent-gold: #D49B4B;           /* Warm Ochre Gold */
-  --accent-olive: #6B705C;          /* Earth Olive */
+  --accent-rose: #C94C4C;           /* Terracotta Rose */
+  --accent-purple: #7E6C8F;         /* Soft Dusk */
 
   /* High Contrast Readability Text Tokens */
-  --text-primary: #1F1A17;          /* Deep warm dark espresso */
-  --text-secondary: #59524C;        /* Muted slate taupe */
-  --text-muted: #8C847C;            /* Warm sand gray */
+  --text-primary: #29231F;          /* Deep warm espresso */
+  --text-secondary: #756C62;        /* Muted slate taupe */
+  --text-muted: #968D83;            /* Warm sand taupe */
 
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 18px;
   --radius-full: 9999px;
 
-  --shadow-subtle: 0 4px 20px -2px rgba(31, 26, 23, 0.05);
-  --shadow-glow: 0 8px 30px -4px rgba(184, 91, 61, 0.08);
+  --shadow-subtle: 0 4px 20px -2px rgba(41, 35, 31, 0.05);
+  --shadow-glow: 0 8px 30px -4px rgba(184, 111, 82, 0.1);
 
-  --glass-bg: rgba(250, 249, 245, 0.88);
-  --glass-border: #E6E1D7;
+  --glass-bg: rgba(247, 244, 238, 0.88);
+  --glass-border: #DED6C9;
   --glass-backdrop: blur(16px);
 }
 
-/* Dark mode fallback override if user toggles */
+/* Dark mode companion theme */
 [data-theme='dark'] {
   --bg-dark: #1A1715;
   --bg-card: #24201D;
@@ -53,12 +51,16 @@
   --bg-input: #2D2824;
   --bg-subtle: #292420;
   --border-color: #3D3631;
-  --border-color-glow: rgba(184, 91, 61, 0.3);
+  --border-color-glow: rgba(212, 115, 83, 0.3);
 
   --primary: #D47353;
   --primary-hover: #B85B3D;
   --primary-glow: rgba(212, 115, 83, 0.2);
   --primary-light: rgba(212, 115, 83, 0.15);
+
+  --accent-olive: #92997C;
+  --accent-champagne: #D4AD70;
+  --accent-teal: #649E94;
 
   --text-primary: #FAF6F0;
   --text-secondary: #D4CDC4;
@@ -82,6 +84,7 @@ body {
   overflow-x: hidden;
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Headline Editorial Typography */
@@ -117,20 +120,48 @@ button {
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-subtle);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .glass-card {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  box-shadow: 0 2px 12px rgba(31, 26, 23, 0.03);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 12px rgba(41, 35, 31, 0.04);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .glass-card:hover {
-  border-color: #D6CEC0;
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-subtle);
+  border-color: var(--primary);
+  transform: translateY(-3px) scale(1.008);
+  box-shadow: var(--shadow-glow);
+}
+
+/* 2.5D Subtle Travel Experience Utilities */
+.card-25d {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+.card-25d-inner {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-25d:hover .card-25d-inner {
+  transform: translateZ(12px) rotateX(1.5deg) rotateY(-1.5deg);
+}
+
+/* Progressive Route Drawing Line */
+.route-line-animated {
+  stroke-dasharray: 400;
+  stroke-dashoffset: 400;
+  animation: drawRoute 1.8s ease-out forwards;
+}
+
+@keyframes drawRoute {
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 
 /* Layout App Grid */
@@ -142,7 +173,7 @@ button {
 
 .app-sidebar {
   width: 260px;
-  background: #FAF8F4;
+  background: var(--bg-subtle);
   border-right: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
@@ -152,6 +183,7 @@ button {
   left: 0;
   z-index: 40;
   padding: 1.5rem 1.1rem;
+  transition: background-color 0.3s ease;
 }
 
 .app-main {
@@ -162,6 +194,7 @@ button {
   flex-direction: column;
   padding-bottom: 4rem;
   background-color: var(--bg-dark);
+  transition: background-color 0.3s ease;
 }
 
 @media (max-width: 1024px) {
@@ -222,13 +255,13 @@ button {
 .btn-primary {
   background-color: var(--primary);
   color: #FFFFFF;
-  box-shadow: 0 2px 8px rgba(184, 91, 61, 0.2);
+  box-shadow: 0 2px 8px rgba(184, 111, 82, 0.2);
 }
 
 .btn-primary:hover {
   background-color: var(--primary-hover);
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(184, 91, 61, 0.3);
+  box-shadow: 0 4px 14px rgba(184, 111, 82, 0.3);
 }
 
 .btn-secondary {
@@ -289,7 +322,7 @@ button {
 }
 
 .input-field:focus {
-  background-color: #FFFFFF;
+  background-color: var(--bg-card);
   border-color: var(--primary);
   box-shadow: 0 0 0 3px var(--primary-glow);
 }
@@ -309,7 +342,7 @@ button {
 .badge-primary {
   background: var(--primary-light);
   color: var(--primary);
-  border: 1px solid rgba(184, 91, 61, 0.2);
+  border: 1px solid rgba(184, 111, 82, 0.2);
 }
 
 .badge-success {
@@ -319,9 +352,9 @@ button {
 }
 
 .badge-warning {
-  background: rgba(212, 155, 75, 0.12);
-  color: var(--accent-gold);
-  border: 1px solid rgba(212, 155, 75, 0.25);
+  background: rgba(196, 154, 90, 0.12);
+  color: var(--accent-champagne);
+  border: 1px solid rgba(196, 154, 90, 0.25);
 }
 
 .badge-danger {
@@ -345,7 +378,8 @@ button {
 }
 
 .modal-content {
-  background: #FFFFFF;
+  background: var(--bg-card);
+  color: var(--text-primary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   max-width: 580px;
@@ -354,7 +388,7 @@ button {
   overflow-y: auto;
   padding: 2rem;
   position: relative;
-  box-shadow: 0 20px 40px -10px rgba(31, 26, 23, 0.15);
+  box-shadow: 0 20px 40px -10px rgba(31, 26, 23, 0.2);
   animation: modalIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -372,19 +406,19 @@ button {
   background: var(--bg-dark);
 }
 ::-webkit-scrollbar-thumb {
-  background: #D9D2C7;
+  background: var(--border-color);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--primary);
 }
 
-/* Subtle Animation */
+/* Subtle Motion Animation */
 .animate-fade-in {
-  animation: fadeIn 0.25s ease-out forwards;
+  animation: fadeIn 0.3s ease-out forwards;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
+  from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }

@@ -92,14 +92,14 @@ export const CalendarTimelinePage: React.FC<CalendarTimelinePageProps> = ({ setA
                   width: '22px',
                   height: '22px',
                   borderRadius: '50%',
-                  background: isExpanded ? 'var(--primary)' : '#FFFFFF',
+                  background: isExpanded ? 'var(--primary)' : 'var(--bg-card)',
                   border: '3px solid var(--primary)',
                   boxShadow: isExpanded ? '0 0 10px rgba(184, 91, 61, 0.4)' : 'none',
                   zIndex: 2,
                   transition: 'all 0.2s ease'
                 }} />
 
-                <div className="glass-card" style={{ padding: '1.25rem 1.5rem', cursor: 'pointer', background: '#FFFFFF' }} onClick={() => setExpandedDay(isExpanded ? null : day.dayNumber)}>
+                <div className="glass-card" style={{ padding: '1.25rem 1.5rem', cursor: 'pointer', background: 'var(--bg-card)' }} onClick={() => setExpandedDay(isExpanded ? null : day.dayNumber)}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                       <span style={{ fontWeight: 800, fontSize: '1.05rem', color: 'var(--primary)' }}>

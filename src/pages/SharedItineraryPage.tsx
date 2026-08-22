@@ -94,7 +94,7 @@ export const SharedItineraryPage: React.FC<SharedItineraryPageProps> = ({ setAct
         )}
       </div>
 
-      <div className="glass-card" style={{ padding: '2.5rem', overflow: 'hidden', background: '#FFFFFF' }}>
+      <div className="glass-card" style={{ padding: '2.5rem', overflow: 'hidden', background: 'var(--bg-card)' }}>
         
         <div style={{
           height: '240px',

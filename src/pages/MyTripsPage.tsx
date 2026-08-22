@@ -52,7 +52,7 @@ export const MyTripsPage: React.FC<MyTripsPageProps> = ({ setActiveTab }) => {
                 fontWeight: 600,
                 textTransform: 'capitalize',
                 color: filterStatus === st ? 'var(--primary)' : 'var(--text-muted)',
-                background: filterStatus === st ? '#FFFFFF' : 'transparent',
+                background: filterStatus === st ? 'var(--bg-card)' : 'transparent',
                 boxShadow: filterStatus === st ? '0 2px 6px rgba(0,0,0,0.04)' : 'none'
               }}
             >

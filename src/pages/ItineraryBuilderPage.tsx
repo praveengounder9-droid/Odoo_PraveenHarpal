@@ -125,7 +125,7 @@ export const ItineraryBuilderPage: React.FC<ItineraryBuilderPageProps> = ({ setA
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
       
       {/* Header Banner */}
-      <div className="glass-panel" style={{ padding: '1.5rem 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+      <div className="glass-panel" style={{ padding: '1.5rem 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', background: 'var(--bg-card)' }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.3rem' }}>
             <span className="badge badge-primary">{activeTrip.status}</span>
@@ -147,7 +147,7 @@ export const ItineraryBuilderPage: React.FC<ItineraryBuilderPageProps> = ({ setA
       </div>
 
       {/* Connected Journey Sequence Pathway */}
-      <div className="glass-card" style={{ padding: '1.5rem', background: '#FFFFFF' }}>
+      <div className="glass-card" style={{ padding: '1.5rem', background: 'var(--bg-card)' }}>
         <h4 style={{ fontSize: '0.825rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '1rem', fontWeight: 700 }}>
           Connected Journey Route
         </h4>
@@ -240,7 +240,7 @@ export const ItineraryBuilderPage: React.FC<ItineraryBuilderPageProps> = ({ setA
               onChange={e => setSelectedCityId(e.target.value)}
             >
               {availableCities.map(city => (
-                <option key={city.id} value={city.id} style={{ background: '#FFFFFF', color: '#1F1A17' }}>
+                <option key={city.id} value={city.id} style={{ background: 'var(--bg-card)', color: 'var(--text-primary)' }}>
                   {city.name}, {city.country} ({city.costIndex} Cost Level)
                 </option>
               ))}
@@ -331,11 +331,11 @@ export const ItineraryBuilderPage: React.FC<ItineraryBuilderPageProps> = ({ setA
                   value={actCategory}
                   onChange={e => setActCategory(e.target.value as any)}
                 >
-                  <option value="Sightseeing">Sightseeing</option>
-                  <option value="Food">Food</option>
-                  <option value="Adventure">Adventure</option>
-                  <option value="Culture">Culture</option>
-                  <option value="Entertainment">Entertainment</option>
+                  <option value="Sightseeing" style={{ background: 'var(--bg-card)', color: 'var(--text-primary)' }}>Sightseeing</option>
+                  <option value="Food" style={{ background: 'var(--bg-card)', color: 'var(--text-primary)' }}>Food</option>
+                  <option value="Adventure" style={{ background: 'var(--bg-card)', color: 'var(--text-primary)' }}>Adventure</option>
+                  <option value="Culture" style={{ background: 'var(--bg-card)', color: 'var(--text-primary)' }}>Culture</option>
+                  <option value="Entertainment" style={{ background: 'var(--bg-card)', color: 'var(--text-primary)' }}>Entertainment</option>
                 </select>
               </div>
               <Input

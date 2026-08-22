@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Compass, Mail, Lock, User as UserIcon, ArrowRight } from 'lucide-react';
+import { Compass, Mail, Lock, User as UserIcon, ArrowRight, UserCheck } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { Input } from '../components/common/Input';
 import { Button } from '../components/common/Button';
@@ -48,6 +48,17 @@ export const LoginPage: React.FC = () => {
     }
   };
 
+  const handleQuickLogin = async (quickEmail: string) => {
+    setIsLoading(true);
+    try {
+      await login(quickEmail, 'password123');
+    } catch (err: any) {
+      setError(err?.message || 'Quick login failed');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleForgotSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (forgotEmail) {
@@ -79,16 +90,16 @@ export const LoginPage: React.FC = () => {
 
       {/* Main Glass Card */}
       <div className="glass-panel" style={{
-        maxWidth: '430px',
+        maxWidth: '440px',
         width: '100%',
         padding: '2.5rem 2rem',
         position: 'relative',
         zIndex: 10,
-        background: '#FFFFFF',
-        boxShadow: '0 20px 40px -10px rgba(31, 26, 23, 0.08)'
+        background: 'var(--bg-card)',
+        boxShadow: '0 20px 40px -10px rgba(31, 26, 23, 0.12)'
       }}>
         {/* Brand Icon */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '2rem', textAlign: 'center' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '1.75rem', textAlign: 'center' }}>
           <div style={{
             width: '52px',
             height: '52px',
@@ -99,7 +110,7 @@ export const LoginPage: React.FC = () => {
             justifyContent: 'center',
             color: '#FFFFFF',
             marginBottom: '0.75rem',
-            boxShadow: '0 4px 14px rgba(184, 91, 61, 0.25)'
+            boxShadow: '0 4px 14px rgba(184, 111, 82, 0.25)'
           }}>
             <Compass size={30} />
           </div>
@@ -107,6 +118,31 @@ export const LoginPage: React.FC = () => {
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '0.2rem' }}>
             {isSignup ? 'Create your personal travel account' : 'Welcome back to your travel journal'}
           </p>
+        </div>
+
+        {/* Quick Demo Accounts Bar */}
+        <div style={{ marginBottom: '1.5rem', padding: '0.85rem', background: 'var(--bg-subtle)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)' }}>
+          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+            <UserCheck size={13} style={{ color: 'var(--primary)' }} /> Quick Multi-User Test Accounts:
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+            <button
+              type="button"
+              onClick={() => handleQuickLogin('rahul@globetrotter.io')}
+              className="btn btn-secondary btn-sm"
+              style={{ fontSize: '0.75rem', justifyContent: 'center' }}
+            >
+              User A (Rahul)
+            </button>
+            <button
+              type="button"
+              onClick={() => handleQuickLogin('priya@globetrotter.io')}
+              className="btn btn-secondary btn-sm"
+              style={{ fontSize: '0.75rem', justifyContent: 'center' }}
+            >
+              User B (Priya)
+            </button>
+          </div>
         </div>
 
         {error && (
@@ -138,7 +174,7 @@ export const LoginPage: React.FC = () => {
           <Input
             label="Email Address"
             type="email"
-            placeholder="alex.morgan@globetrotter.io"
+            placeholder="rahul@globetrotter.io"
             value={email}
             onChange={e => setEmail(e.target.value)}
             icon={<Mail size={17} />}
@@ -212,7 +248,7 @@ export const LoginPage: React.FC = () => {
             <Input
               label="Email Address"
               type="email"
-              placeholder="alex.morgan@globetrotter.io"
+              placeholder="rahul@globetrotter.io"
               value={forgotEmail}
               onChange={e => setForgotEmail(e.target.value)}
               icon={<Mail size={17} />}

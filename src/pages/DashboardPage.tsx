@@ -43,7 +43,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ setActiveTab }) =>
       {/* Hero Travel Workspace Welcome Banner */}
       <div className="glass-panel" style={{
         padding: '2.5rem',
-        background: 'linear-gradient(135deg, #F4F0E8, #FAF8F4)',
+        background: 'linear-gradient(135deg, var(--bg-subtle), var(--bg-card))',
         position: 'relative',
         overflow: 'hidden',
         border: '1px solid var(--border-color)',

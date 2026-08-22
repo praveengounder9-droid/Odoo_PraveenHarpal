@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Compass, Share2, Sun, Moon, MapPin } from 'lucide-react';
 import { useTrips } from '../../context/TripContext';
 import { useAuth } from '../../context/AuthContext';
+import { profileService } from '../../services/api/profileService';
 
 interface NavbarProps {
   activeTab: string;
@@ -11,15 +12,40 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
   const { activeTrip, trips, setActiveTripId } = useTrips();
   const { user, updateProfileState } = useAuth();
+  
+  // Theme state synced with documentElement and localStorage
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    const saved = localStorage.getItem('globetrotter_theme');
+    if (saved === 'dark' || saved === 'light') return saved;
+    return user?.preferences?.theme || 'light';
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('globetrotter_theme', theme);
+  }, [theme]);
+
+  // Sync theme when user preferences load
+  useEffect(() => {
+    if (user?.preferences?.theme) {
+      setTheme(user.preferences.theme);
+    }
+  }, [user?.preferences?.theme]);
 
   const toggleTheme = () => {
-    if (!user) return;
-    const newTheme = user.preferences.theme === 'dark' ? 'light' : 'dark';
+    const newTheme: 'light' | 'dark' = theme === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
     document.documentElement.setAttribute('data-theme', newTheme);
-    updateProfileState({
-      ...user,
-      preferences: { ...user.preferences, theme: newTheme }
-    });
+    localStorage.setItem('globetrotter_theme', newTheme);
+
+    if (user) {
+      const updated = {
+        ...user,
+        preferences: { ...user.preferences, theme: newTheme }
+      };
+      updateProfileState(updated);
+      profileService.updateProfile({ preferences: updated.preferences }).catch(console.error);
+    }
   };
 
   const getPageTitle = (tab: string) => {
@@ -79,7 +105,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
             }}
           >
             {trips.map(t => (
-              <option key={t.id} value={t.id} style={{ background: '#FFFFFF', color: '#1F1A17' }}>
+              <option key={t.id} value={t.id} style={{ background: 'var(--bg-card)', color: 'var(--text-primary)' }}>
                 {t.name} ({t.stops.length} stops)
               </option>
             ))}
@@ -114,7 +140,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
           }}
           title="Toggle Dark/Light Mode"
         >
-          {user?.preferences.theme === 'light' ? <Moon size={17} /> : <Sun size={17} />}
+          {theme === 'light' ? <Moon size={17} /> : <Sun size={17} />}
         </button>
       </div>
 

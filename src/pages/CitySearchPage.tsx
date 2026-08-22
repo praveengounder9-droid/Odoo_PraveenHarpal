@@ -49,7 +49,7 @@ export const CitySearchPage: React.FC<CitySearchPageProps> = ({ setActiveTab }) 
         </p>
       </div>
 
-      <div className="glass-card" style={{ padding: '1.25rem', display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', background: '#FFFFFF' }}>
+      <div className="glass-card" style={{ padding: '1.25rem', display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', background: 'var(--bg-card)' }}>
         <div style={{ flex: 1, minWidth: '240px' }}>
           <Input
             placeholder="Search by city name, country, or tag (e.g. Tokyo, France, Food)..."

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, MapPin, Clock, List, LayoutGrid, Share2, Printer } from 'lucide-react';
+import { Calendar, MapPin, Clock, List, LayoutGrid, Share2, Printer, Navigation } from 'lucide-react';
 import { useTrips } from '../context/TripContext';
 import { EmptyState } from '../components/common/EmptyState';
 
@@ -61,7 +61,7 @@ export const ItineraryViewPage: React.FC<ItineraryViewPageProps> = ({ setActiveT
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
       
-      <div className="glass-panel" style={{ padding: '2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+      <div className="glass-panel" style={{ padding: '2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', background: 'var(--bg-card)' }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.3rem' }}>
             <span className="badge badge-primary">{activeTrip.status}</span>
@@ -86,7 +86,7 @@ export const ItineraryViewPage: React.FC<ItineraryViewPageProps> = ({ setActiveT
                 fontSize: '0.825rem',
                 fontWeight: 600,
                 color: viewMode === 'list' ? 'var(--primary)' : 'var(--text-muted)',
-                background: viewMode === 'list' ? '#FFFFFF' : 'transparent',
+                background: viewMode === 'list' ? 'var(--bg-card)' : 'transparent',
                 boxShadow: viewMode === 'list' ? '0 2px 6px rgba(0,0,0,0.04)' : 'none'
               }}
             >
@@ -103,7 +103,7 @@ export const ItineraryViewPage: React.FC<ItineraryViewPageProps> = ({ setActiveT
                 fontSize: '0.825rem',
                 fontWeight: 600,
                 color: viewMode === 'timeline' ? 'var(--primary)' : 'var(--text-muted)',
-                background: viewMode === 'timeline' ? '#FFFFFF' : 'transparent',
+                background: viewMode === 'timeline' ? 'var(--bg-card)' : 'transparent',
                 boxShadow: viewMode === 'timeline' ? '0 2px 6px rgba(0,0,0,0.04)' : 'none'
               }}
             >
@@ -120,6 +120,29 @@ export const ItineraryViewPage: React.FC<ItineraryViewPageProps> = ({ setActiveT
         </div>
       </div>
 
+      {/* Travel Route Visual Bar */}
+      {activeTrip.stops.length > 0 && (
+        <div className="glass-card" style={{ padding: '1.25rem 1.75rem', background: 'var(--bg-subtle)' }}>
+          <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+            <Navigation size={15} style={{ color: 'var(--primary)' }} /> Visual Journey Route
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '0.85rem' }}>
+            {activeTrip.stops.map((s, idx) => (
+              <React.Fragment key={s.id}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--bg-card)', padding: '0.4rem 0.8rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)' }}>
+                  <MapPin size={14} style={{ color: 'var(--primary)' }} />
+                  <span style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-primary)' }}>{s.cityName}</span>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>({s.country})</span>
+                </div>
+                {idx < activeTrip.stops.length - 1 && (
+                  <span style={{ color: 'var(--primary)', fontWeight: 800, fontSize: '1.1rem' }}>➔</span>
+                )}
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
+      )}
+
       {dayWiseItinerary.length === 0 ? (
         <EmptyState
           icon={<MapPin size={30} />}
@@ -134,7 +157,7 @@ export const ItineraryViewPage: React.FC<ItineraryViewPageProps> = ({ setActiveT
       ) : viewMode === 'list' ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           {dayWiseItinerary.map((day) => (
-            <div key={day.dayNumber} className="glass-card" style={{ padding: '1.5rem', background: '#FFFFFF' }}>
+            <div key={day.dayNumber} className="glass-card" style={{ padding: '1.5rem', background: 'var(--bg-card)' }}>
               <div style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -225,7 +248,7 @@ export const ItineraryViewPage: React.FC<ItineraryViewPageProps> = ({ setActiveT
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
           {dayWiseItinerary.map((day) => (
-            <div key={day.dayNumber} className="glass-card" style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.75rem', background: '#FFFFFF' }}>
+            <div key={day.dayNumber} className="glass-card" style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.75rem', background: 'var(--bg-card)' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <span className="badge badge-primary">Day {day.dayNumber}</span>
                 <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{day.dateStr}</span>

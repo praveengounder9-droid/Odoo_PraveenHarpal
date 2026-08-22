@@ -15,8 +15,8 @@ export const ProfilePage: React.FC = () => {
   const [email, setEmail] = useState(user?.email || '');
   const [bio, setBio] = useState(user?.bio || '');
   const [avatarUrl, setAvatarUrl] = useState(user?.avatarUrl || '');
-  const [currency, setCurrency] = useState(user?.preferences.currency || 'USD');
-  const [language, setLanguage] = useState(user?.preferences.language || 'English');
+  const [currency, setCurrency] = useState(user?.preferences?.currency || 'USD');
+  const [language, setLanguage] = useState(user?.preferences?.language || 'English');
 
   const [savedCities, setSavedCities] = useState<City[]>([]);
   const [isSaving, setIsSaving] = useState(false);
@@ -24,11 +24,24 @@ export const ProfilePage: React.FC = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
+    if (user) {
+      setName(user.name);
+      setEmail(user.email);
+      setBio(user.bio || '');
+      setAvatarUrl(user.avatarUrl || '');
+      setCurrency(user.preferences?.currency || 'USD');
+      setLanguage(user.preferences?.language || 'English');
+    }
+  }, [user]);
+
+  useEffect(() => {
     if (user?.savedCityIds && user.savedCityIds.length > 0) {
       citiesService.getCities().then(all => {
         const filtered = all.filter(c => user.savedCityIds.includes(c.id));
         setSavedCities(filtered);
       });
+    } else {
+      setSavedCities([]);
     }
   }, [user]);
 
@@ -44,7 +57,7 @@ export const ProfilePage: React.FC = () => {
         preferences: {
           currency,
           language,
-          theme: user?.preferences.theme || 'light'
+          theme: user?.preferences?.theme || 'light'
         }
       });
       updateProfileState(updated);
@@ -66,7 +79,7 @@ export const ProfilePage: React.FC = () => {
         </p>
       </div>
 
-      <form onSubmit={handleProfileSave} className="glass-panel" style={{ padding: '2rem', background: '#FFFFFF' }}>
+      <form onSubmit={handleProfileSave} className="glass-panel" style={{ padding: '2rem', background: 'var(--bg-card)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '2rem', paddingBottom: '1.5rem', borderBottom: '1px solid var(--border-color)' }}>
           <img
             src={avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80'}
@@ -75,7 +88,7 @@ export const ProfilePage: React.FC = () => {
           />
           <div style={{ flex: 1 }}>
             <h3 style={{ fontSize: '1.25rem', fontFamily: 'Playfair Display, Georgia, serif', color: 'var(--text-primary)' }}>{name}</h3>
-            <span style={{ fontSize: '0.825rem', color: 'var(--text-muted)' }}>Role: {user?.role.toUpperCase()}</span>
+            <span style={{ fontSize: '0.825rem', color: 'var(--text-muted)' }}>Role: {user?.role ? user.role.toUpperCase() : 'USER'}</span>
             <div style={{ marginTop: '0.5rem' }}>
               <Input
                 placeholder="Avatar Image URL..."
@@ -118,22 +131,22 @@ export const ProfilePage: React.FC = () => {
           <div className="form-group">
             <label className="form-label">Preferred Currency</label>
             <select className="input-field" value={currency} onChange={e => setCurrency(e.target.value)}>
-              <option value="USD">USD ($)</option>
-              <option value="EUR">EUR (€)</option>
-              <option value="GBP">GBP (£)</option>
-              <option value="JPY">JPY (¥)</option>
-              <option value="AUD">AUD ($)</option>
+              <option value="USD" style={{ background: 'var(--bg-card)', color: 'var(--text-primary)' }}>USD ($)</option>
+              <option value="EUR" style={{ background: 'var(--bg-card)', color: 'var(--text-primary)' }}>EUR (€)</option>
+              <option value="GBP" style={{ background: 'var(--bg-card)', color: 'var(--text-primary)' }}>GBP (£)</option>
+              <option value="JPY" style={{ background: 'var(--bg-card)', color: 'var(--text-primary)' }}>JPY (¥)</option>
+              <option value="AUD" style={{ background: 'var(--bg-card)', color: 'var(--text-primary)' }}>AUD ($)</option>
             </select>
           </div>
 
           <div className="form-group">
             <label className="form-label">Language Preference</label>
             <select className="input-field" value={language} onChange={e => setLanguage(e.target.value)}>
-              <option value="English">English</option>
-              <option value="French">French</option>
-              <option value="Spanish">Spanish</option>
-              <option value="Japanese">Japanese</option>
-              <option value="German">German</option>
+              <option value="English" style={{ background: 'var(--bg-card)', color: 'var(--text-primary)' }}>English</option>
+              <option value="French" style={{ background: 'var(--bg-card)', color: 'var(--text-primary)' }}>French</option>
+              <option value="Spanish" style={{ background: 'var(--bg-card)', color: 'var(--text-primary)' }}>Spanish</option>
+              <option value="Japanese" style={{ background: 'var(--bg-card)', color: 'var(--text-primary)' }}>Japanese</option>
+              <option value="German" style={{ background: 'var(--bg-card)', color: 'var(--text-primary)' }}>German</option>
             </select>
           </div>
         </div>
@@ -156,9 +169,9 @@ export const ProfilePage: React.FC = () => {
 
       </form>
 
-      <div className="glass-card" style={{ padding: '1.5rem', background: '#FFFFFF' }}>
+      <div className="glass-card" style={{ padding: '1.5rem', background: 'var(--bg-card)' }}>
         <h3 style={{ fontSize: '1.2rem', fontFamily: 'Playfair Display, Georgia, serif', color: 'var(--text-primary)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <Bookmark size={17} style={{ color: 'var(--accent-gold)' }} />
+          <Bookmark size={17} style={{ color: 'var(--accent-champagne)' }} />
           Saved Destinations ({savedCities.length})
         </h3>
         {savedCities.length === 0 ? (

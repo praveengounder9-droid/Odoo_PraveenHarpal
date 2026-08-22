@@ -31,16 +31,16 @@ const MainAppContent: React.FC = () => {
     return (
       <div style={{
         minHeight: '100vh',
-        background: '#0b0f19',
+        background: 'var(--bg-dark)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        color: '#38bdf8',
+        color: 'var(--primary)',
         fontFamily: 'Outfit, sans-serif'
       }}>
         <div style={{ textAlign: 'center' }}>
-          <h2 style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>GlobeTrotter</h2>
-          <p style={{ color: '#94a3b8', fontSize: '0.9rem' }}>Loading application session...</p>
+          <h2 style={{ fontSize: '1.8rem', fontFamily: 'Playfair Display, Georgia, serif', color: 'var(--text-primary)', marginBottom: '0.5rem' }}>GlobeTrotter</h2>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Loading application session...</p>
         </div>
       </div>
     );

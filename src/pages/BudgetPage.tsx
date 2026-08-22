@@ -59,7 +59,7 @@ export const BudgetPage: React.FC<BudgetPageProps> = ({ setActiveTab }) => {
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
       
-      <div className="glass-panel" style={{ padding: '1.5rem 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+      <div className="glass-panel" style={{ padding: '1.5rem 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', background: 'var(--bg-card)' }}>
         <div>
           <span style={{ fontSize: '0.8rem', color: 'var(--primary)', fontWeight: 700, textTransform: 'uppercase' }}>Financial Dashboard</span>
           <h2 style={{ fontSize: '1.8rem', fontFamily: 'Playfair Display, Georgia, serif', color: 'var(--text-primary)' }}>{activeTrip.name} – Budget Overview</h2>
@@ -95,7 +95,7 @@ export const BudgetPage: React.FC<BudgetPageProps> = ({ setActiveTab }) => {
       )}
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem' }}>
-        <div className="glass-card" style={{ padding: '1.2rem', background: '#FFFFFF' }}>
+        <div className="glass-card" style={{ padding: '1.2rem', background: 'var(--bg-card)' }}>
           <div style={{ fontSize: '0.785rem', color: 'var(--text-muted)' }}>Target Estimated Budget</div>
           <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', marginTop: '0.2rem' }}>
             ${budgetData.totalEstimatedBudget}
@@ -103,7 +103,7 @@ export const BudgetPage: React.FC<BudgetPageProps> = ({ setActiveTab }) => {
           <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Set during trip creation</span>
         </div>
 
-        <div className="glass-card" style={{ padding: '1.2rem', background: '#FFFFFF' }}>
+        <div className="glass-card" style={{ padding: '1.2rem', background: 'var(--bg-card)' }}>
           <div style={{ fontSize: '0.785rem', color: 'var(--text-muted)' }}>Total Calculated Expense</div>
           <div style={{ fontSize: '1.5rem', fontWeight: 800, color: budgetData.totalActualCost > budgetData.totalEstimatedBudget ? 'var(--accent-rose)' : 'var(--accent-teal)', marginTop: '0.2rem' }}>
             ${budgetData.totalActualCost}
@@ -111,7 +111,7 @@ export const BudgetPage: React.FC<BudgetPageProps> = ({ setActiveTab }) => {
           <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>All categories combined</span>
         </div>
 
-        <div className="glass-card" style={{ padding: '1.2rem', background: '#FFFFFF' }}>
+        <div className="glass-card" style={{ padding: '1.2rem', background: 'var(--bg-card)' }}>
           <div style={{ fontSize: '0.785rem', color: 'var(--text-muted)' }}>Average Daily Cost</div>
           <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--primary)', marginTop: '0.2rem' }}>
             ${avgCostPerDay}/day
@@ -119,7 +119,7 @@ export const BudgetPage: React.FC<BudgetPageProps> = ({ setActiveTab }) => {
           <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Across {budgetData.dailyExpenses.length} trip days</span>
         </div>
 
-        <div className="glass-card" style={{ padding: '1.2rem', background: '#FFFFFF' }}>
+        <div className="glass-card" style={{ padding: '1.2rem', background: 'var(--bg-card)' }}>
           <div style={{ fontSize: '0.785rem', color: 'var(--text-muted)' }}>Budget Surplus / Deficit</div>
           <div style={{ fontSize: '1.5rem', fontWeight: 800, color: budgetVariance >= 0 ? 'var(--accent-teal)' : 'var(--accent-rose)', marginTop: '0.2rem' }}>
             {budgetVariance >= 0 ? `+$${budgetVariance}` : `-$${Math.abs(budgetVariance)}`}
@@ -131,7 +131,7 @@ export const BudgetPage: React.FC<BudgetPageProps> = ({ setActiveTab }) => {
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: '1.5rem' }} className="budget-charts-grid">
-        <div className="glass-card" style={{ padding: '1.5rem', background: '#FFFFFF' }}>
+        <div className="glass-card" style={{ padding: '1.5rem', background: 'var(--bg-card)' }}>
           <h3 style={{ fontSize: '1.15rem', color: 'var(--text-primary)', marginBottom: '1.25rem' }}>
             Cost Breakdown by Category
           </h3>
@@ -141,7 +141,7 @@ export const BudgetPage: React.FC<BudgetPageProps> = ({ setActiveTab }) => {
           />
         </div>
 
-        <div className="glass-card" style={{ padding: '1.5rem', background: '#FFFFFF' }}>
+        <div className="glass-card" style={{ padding: '1.5rem', background: 'var(--bg-card)' }}>
           <h3 style={{ fontSize: '1.15rem', color: 'var(--text-primary)', marginBottom: '1.25rem' }}>
             Daily Spending vs Target Daily Limit
           </h3>

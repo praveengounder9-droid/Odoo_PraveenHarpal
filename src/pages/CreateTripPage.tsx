@@ -48,7 +48,7 @@ export const CreateTripPage: React.FC<CreateTripPageProps> = ({ setActiveTab }) 
     setIsLoading(true);
     try {
       await createTrip({
-        userId: user?.id || 'usr-101',
+        userId: user?.id || 'usr-rahul',
         name,
         description,
         startDate,
@@ -76,7 +76,7 @@ export const CreateTripPage: React.FC<CreateTripPageProps> = ({ setActiveTab }) 
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="glass-panel" style={{ padding: '2rem' }}>
+      <form onSubmit={handleSubmit} className="glass-panel" style={{ padding: '2rem', background: 'var(--bg-card)' }}>
         <div style={{
           position: 'relative',
           height: '190px',

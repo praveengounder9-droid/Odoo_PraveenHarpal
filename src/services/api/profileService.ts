@@ -1,6 +1,18 @@
 import type { User } from '../../types';
-import { authService } from './authService';
+import { authService, getCurrentUserIdFromSession } from './authService';
 import { apiClient } from './apiClient';
+
+const STORAGE_KEY_USERS_DB = 'globetrotter_users_db';
+
+function getUsersDB(): Record<string, User> {
+  const str = localStorage.getItem(STORAGE_KEY_USERS_DB);
+  if (!str) return {};
+  return JSON.parse(str);
+}
+
+function saveUsersDB(db: Record<string, User>): void {
+  localStorage.setItem(STORAGE_KEY_USERS_DB, JSON.stringify(db));
+}
 
 export const profileService = {
   async getProfile(): Promise<User> {
@@ -9,10 +21,23 @@ export const profileService = {
 
   async updateProfile(updates: Partial<User>): Promise<User> {
     return apiClient.put('/user/profile', updates, async () => {
-      const currentUser = await authService.getCurrentUser();
-      const updated = { ...currentUser, ...updates };
-      localStorage.setItem('globetrotter_user', JSON.stringify(updated));
-      return updated;
+      const currentUserId = getCurrentUserIdFromSession();
+      const db = getUsersDB();
+      const currentUser = db[currentUserId] || await authService.getCurrentUser();
+      
+      const updatedUser: User = {
+        ...currentUser,
+        ...updates,
+        // Ensure preferences sub-object merges correctly
+        preferences: {
+          ...currentUser.preferences,
+          ...(updates.preferences || {})
+        }
+      };
+
+      db[currentUserId] = updatedUser;
+      saveUsersDB(db);
+      return updatedUser;
     });
   },
 

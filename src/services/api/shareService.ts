@@ -16,7 +16,6 @@ export const shareService = {
       if (!sourceTrip) throw new Error('Trip not found');
 
       const copiedTrip = await tripsService.createTrip({
-        userId: 'usr-101',
         name: `${sourceTrip.name} (Copy)`,
         description: sourceTrip.description,
         startDate: sourceTrip.startDate,

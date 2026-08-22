@@ -26,7 +26,7 @@ export const AdminDashboardPage: React.FC = () => {
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem' }}>
-        <div className="glass-card" style={{ padding: '1.2rem', background: '#FFFFFF' }}>
+        <div className="glass-card" style={{ padding: '1.2rem', background: 'var(--bg-card)' }}>
           <div style={{ fontSize: '0.785rem', color: 'var(--text-muted)' }}>Registered Users</div>
           <div style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--text-primary)', marginTop: '0.2rem' }}>
             {stats.totalUsers.toLocaleString()}
@@ -34,7 +34,7 @@ export const AdminDashboardPage: React.FC = () => {
           <span style={{ fontSize: '0.75rem', color: 'var(--accent-teal)' }}>+14.2% this month</span>
         </div>
 
-        <div className="glass-card" style={{ padding: '1.2rem', background: '#FFFFFF' }}>
+        <div className="glass-card" style={{ padding: '1.2rem', background: 'var(--bg-card)' }}>
           <div style={{ fontSize: '0.785rem', color: 'var(--text-muted)' }}>Total Trips Planned</div>
           <div style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--primary)', marginTop: '0.2rem' }}>
             {stats.totalTrips.toLocaleString()}
@@ -42,15 +42,15 @@ export const AdminDashboardPage: React.FC = () => {
           <span style={{ fontSize: '0.75rem', color: 'var(--accent-teal)' }}>+22.8% active creation</span>
         </div>
 
-        <div className="glass-card" style={{ padding: '1.2rem', background: '#FFFFFF' }}>
+        <div className="glass-card" style={{ padding: '1.2rem', background: 'var(--bg-card)' }}>
           <div style={{ fontSize: '0.785rem', color: 'var(--text-muted)' }}>Most Popular City</div>
-          <div style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--accent-gold)', marginTop: '0.2rem' }}>
+          <div style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--accent-champagne)', marginTop: '0.2rem' }}>
             {stats.popularCities[0]?.cityName}
           </div>
           <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{stats.popularCities[0]?.count.toLocaleString()} stops added</span>
         </div>
 
-        <div className="glass-card" style={{ padding: '1.2rem', background: '#FFFFFF' }}>
+        <div className="glass-card" style={{ padding: '1.2rem', background: 'var(--bg-card)' }}>
           <div style={{ fontSize: '0.785rem', color: 'var(--text-muted)' }}>Top Activity Category</div>
           <div style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--accent-sunset)', marginTop: '0.2rem' }}>
             {stats.popularCategories[0]?.category}
@@ -61,7 +61,7 @@ export const AdminDashboardPage: React.FC = () => {
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }} className="admin-grid">
         
-        <div className="glass-card" style={{ padding: '1.5rem', background: '#FFFFFF' }}>
+        <div className="glass-card" style={{ padding: '1.5rem', background: 'var(--bg-card)' }}>
           <h3 style={{ fontSize: '1.15rem', color: 'var(--text-primary)', marginBottom: '1rem' }}>
             Top Booked Destinations
           </h3>
@@ -75,7 +75,7 @@ export const AdminDashboardPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="glass-card" style={{ padding: '1.5rem', background: '#FFFFFF' }}>
+        <div className="glass-card" style={{ padding: '1.5rem', background: 'var(--bg-card)' }}>
           <h3 style={{ fontSize: '1.15rem', color: 'var(--text-primary)', marginBottom: '1rem' }}>
             Activity Interest Breakdown
           </h3>
