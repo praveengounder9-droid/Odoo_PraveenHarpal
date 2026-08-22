@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { PlusCircle, Compass, Calendar, MapPin, TrendingUp, ArrowRight, DollarSign } from 'lucide-react';
+import { PlusCircle, Compass, Calendar, MapPin, TrendingUp, ArrowRight, DollarSign, Sparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTrips } from '../context/TripContext';
 import { citiesService } from '../services/api/citiesService';
 import type { City } from '../types';
 import { TripCard } from '../components/trips/TripCard';
 import { CityCard } from '../components/discovery/CityCard';
+import { CinematicScrollExperience } from '../components/story/CinematicScrollExperience';
 
 interface DashboardPageProps {
   setActiveTab: (tab: string) => void;
@@ -14,7 +15,7 @@ interface DashboardPageProps {
 
 export const DashboardPage: React.FC<DashboardPageProps> = ({ setActiveTab }) => {
   const { user } = useAuth();
-  const { trips, deleteTrip, setActiveTripId, addStopToTrip } = useTrips();
+  const { trips, activeTrip, deleteTrip, setActiveTripId, addStopToTrip } = useTrips();
   const [popularCities, setPopularCities] = useState<City[]>([]);
 
   useEffect(() => {
@@ -29,9 +30,8 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ setActiveTab }) =>
   const currencySymbol = user?.preferences?.currency === 'EUR' ? '€' : user?.preferences?.currency === 'GBP' ? '£' : user?.preferences?.currency === 'JPY' ? '¥' : '$';
 
   const handleQuickAddCity = async (city: City) => {
-    if (trips.length > 0) {
-      const active = trips[0];
-      await addStopToTrip(active.id, city.id, active.startDate, active.endDate);
+    if (trips.length > 0 && activeTrip) {
+      await addStopToTrip(activeTrip.id, city.id, activeTrip.startDate, activeTrip.endDate);
       setActiveTab('builder');
     } else {
       setActiveTab('create-trip');
@@ -41,41 +41,64 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ setActiveTab }) =>
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '2.25rem' }}>
       
-      {/* Hero Welcome Banner */}
+      {/* Hero Welcome Header */}
       <div className="glass-panel" style={{
-        padding: '2.5rem',
+        padding: '2rem 2.25rem',
         background: 'linear-gradient(135deg, var(--bg-subtle), var(--bg-card))',
         position: 'relative',
         overflow: 'hidden',
         border: '1px solid var(--border-color)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '1.5rem'
       }}>
-        <div style={{ position: 'relative', zIndex: 2, maxWidth: '750px' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', background: 'var(--primary-light)', color: 'var(--primary)', padding: '0.3rem 0.8rem', borderRadius: '9999px', fontSize: '0.8rem', fontWeight: 700, marginBottom: '1rem', border: '1px solid rgba(184, 111, 82, 0.2)' }}>
+        <div>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', background: 'var(--primary-light)', color: 'var(--primary)', padding: '0.3rem 0.8rem', borderRadius: '9999px', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.75rem', border: '1px solid rgba(184, 111, 82, 0.2)' }}>
             <Compass size={14} /> Personal Travel Journal
           </div>
-          <h2 style={{ fontSize: '2.2rem', fontFamily: 'Playfair Display, Georgia, serif', color: 'var(--text-primary)', marginBottom: '0.5rem', lineHeight: 1.2 }}>
+          <h2 style={{ fontSize: '2.2rem', fontFamily: 'Playfair Display, Georgia, serif', color: 'var(--text-primary)', marginBottom: '0.4rem', lineHeight: 1.2 }}>
             Where is your next adventure taking you, {user?.name.split(' ')[0]}?
           </h2>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', marginBottom: '1.5rem', lineHeight: 1.6 }}>
-            Organize multi-city itineraries, discover curated world destinations, track your travel budget, and share your personal travel timeline.
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', maxWidth: '650px' }}>
+            Organize multi-city itineraries, discover curated world destinations, track travel budgets, and explore spatial routes.
           </p>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.85rem' }}>
-            <button
-              onClick={() => setActiveTab('create-trip')}
-              className="btn btn-primary btn-lg"
-            >
-              <PlusCircle size={18} />
-              <span>Plan New Trip</span>
-            </button>
-            <button
-              onClick={() => setActiveTab('cities')}
-              className="btn btn-secondary btn-lg"
-            >
-              <Compass size={18} />
-              <span>Explore Destinations</span>
-            </button>
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.85rem' }}>
+          <button
+            onClick={() => setActiveTab('create-trip')}
+            className="btn btn-primary btn-lg"
+          >
+            <PlusCircle size={18} />
+            <span>Plan New Trip</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('cities')}
+            className="btn btn-secondary btn-lg"
+          >
+            <Compass size={18} />
+            <span>Explore Cities</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Cinematic Map Scroll Storytelling Workspace */}
+      <div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+          <div>
+            <h3 style={{ fontSize: '1.35rem', fontFamily: 'Playfair Display, Georgia, serif', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Sparkles size={18} style={{ color: 'var(--primary)' }} />
+              Cinematic Travel Map Workspace
+            </h3>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Interactive spatial routes & destination discovery</p>
           </div>
         </div>
+        <CinematicScrollExperience
+          stops={activeTrip?.stops || []}
+          onPlanTrip={() => setActiveTab('create-trip')}
+          onExploreCities={() => setActiveTab('cities')}
+        />
       </div>
 
       {/* Quick Metrics Bar */}
@@ -105,7 +128,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ setActiveTab }) =>
             <DollarSign size={22} />
           </div>
           <div>
-            <div style={{ fontSize: '0.785rem', color: 'var(--text-muted)' }}>Planned Budget</div>
+            <div style={{ fontSize: '0.785rem', color: 'var(--text-muted)' }}>Planned Budget <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>[User Value]</span></div>
             <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-primary)' }}>{currencySymbol}{totalBudgetPlanned.toLocaleString()}</div>
           </div>
         </div>

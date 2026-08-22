@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Calendar, MapPin, Clock, List, LayoutGrid, Share2, Printer, Navigation } from 'lucide-react';
+import { Calendar, MapPin, Clock, List, LayoutGrid, Share2, Printer, Navigation, Eye } from 'lucide-react';
 import { useTrips } from '../context/TripContext';
 import { EmptyState } from '../components/common/EmptyState';
+import { CinematicTravelMap } from '../components/map/CinematicTravelMap';
 
 interface ItineraryViewPageProps {
   setActiveTab: (tab: string) => void;
@@ -10,6 +11,8 @@ interface ItineraryViewPageProps {
 export const ItineraryViewPage: React.FC<ItineraryViewPageProps> = ({ setActiveTab }) => {
   const { activeTrip } = useTrips();
   const [viewMode, setViewMode] = useState<'list' | 'timeline'>('list');
+  const [selectedDayIndex, setSelectedDayIndex] = useState<number | null>(null);
+  const [activeStopId, setActiveStopId] = useState<string | null>(null);
 
   if (!activeTrip) {
     return (
@@ -30,6 +33,7 @@ export const ItineraryViewPage: React.FC<ItineraryViewPageProps> = ({ setActiveT
   const dayWiseItinerary: Array<{
     dayNumber: number;
     dateStr: string;
+    stopId: string;
     cityName: string;
     country: string;
     activities: any[];
@@ -51,6 +55,7 @@ export const ItineraryViewPage: React.FC<ItineraryViewPageProps> = ({ setActiveT
       dayWiseItinerary.push({
         dayNumber: dayCounter++,
         dateStr,
+        stopId: stop.id,
         cityName: stop.cityName,
         country: stop.country,
         activities: dayActs,
@@ -61,6 +66,7 @@ export const ItineraryViewPage: React.FC<ItineraryViewPageProps> = ({ setActiveT
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
       
+      {/* Header Bar */}
       <div className="glass-panel" style={{ padding: '2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', background: 'var(--bg-card)' }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.3rem' }}>
@@ -120,26 +126,43 @@ export const ItineraryViewPage: React.FC<ItineraryViewPageProps> = ({ setActiveT
         </div>
       </div>
 
-      {/* Travel Route Visual Bar */}
+      {/* Map + Itinerary Split Workspace */}
       {activeTrip.stops.length > 0 && (
-        <div className="glass-card" style={{ padding: '1.25rem 1.75rem', background: 'var(--bg-subtle)' }}>
-          <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            <Navigation size={15} style={{ color: 'var(--primary)' }} /> Visual Journey Route
+        <div className="glass-card" style={{ padding: '1.5rem', background: 'var(--bg-card)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.75rem' }}>
+            <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+              <Navigation size={16} style={{ color: 'var(--primary)' }} /> Synchronized Travel Map Workspace
+            </div>
+
+            {/* Day-by-Day Spatial Filter Selector */}
+            <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap' }}>
+              <button
+                type="button"
+                onClick={() => setSelectedDayIndex(null)}
+                className={`btn btn-xs ${selectedDayIndex === null ? 'btn-primary' : 'btn-secondary'}`}
+              >
+                All Days
+              </button>
+              {dayWiseItinerary.map(d => (
+                <button
+                  key={d.dayNumber}
+                  type="button"
+                  onClick={() => setSelectedDayIndex(d.dayNumber)}
+                  className={`btn btn-xs ${selectedDayIndex === d.dayNumber ? 'btn-primary' : 'btn-secondary'}`}
+                >
+                  Day {d.dayNumber} ({d.cityName})
+                </button>
+              ))}
+            </div>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '0.85rem' }}>
-            {activeTrip.stops.map((s, idx) => (
-              <React.Fragment key={s.id}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--bg-card)', padding: '0.4rem 0.8rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)' }}>
-                  <MapPin size={14} style={{ color: 'var(--primary)' }} />
-                  <span style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-primary)' }}>{s.cityName}</span>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>({s.country})</span>
-                </div>
-                {idx < activeTrip.stops.length - 1 && (
-                  <span style={{ color: 'var(--primary)', fontWeight: 800, fontSize: '1.1rem' }}>➔</span>
-                )}
-              </React.Fragment>
-            ))}
-          </div>
+
+          <CinematicTravelMap
+            stops={activeTrip.stops}
+            activeStopId={activeStopId}
+            onSelectStop={stop => setActiveStopId(stop.id)}
+            height="380px"
+            selectedDay={selectedDayIndex}
+          />
         </div>
       )}
 
@@ -156,94 +179,115 @@ export const ItineraryViewPage: React.FC<ItineraryViewPageProps> = ({ setActiveT
         />
       ) : viewMode === 'list' ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          {dayWiseItinerary.map((day) => (
-            <div key={day.dayNumber} className="glass-card" style={{ padding: '1.5rem', background: 'var(--bg-card)' }}>
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginBottom: '1.25rem',
-                paddingBottom: '0.75rem',
-                borderBottom: '1px solid var(--border-color)'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <div style={{
-                    width: '40px',
-                    height: '40px',
-                    borderRadius: '10px',
-                    background: 'var(--primary)',
-                    color: '#FFFFFF',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontWeight: 800,
-                    fontSize: '0.9rem'
-                  }}>
-                    D{day.dayNumber}
+          {dayWiseItinerary.map((day) => {
+            const isHighlighted = activeStopId === day.stopId || selectedDayIndex === day.dayNumber;
+            return (
+              <div
+                key={day.dayNumber}
+                className="glass-card"
+                style={{
+                  padding: '1.5rem',
+                  background: 'var(--bg-card)',
+                  border: isHighlighted ? '2px solid var(--primary)' : '1px solid var(--border-color)',
+                  boxShadow: isHighlighted ? '0 4px 16px rgba(184, 111, 82, 0.15)' : 'var(--shadow-subtle)'
+                }}
+              >
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  marginBottom: '1.25rem',
+                  paddingBottom: '0.75rem',
+                  borderBottom: '1px solid var(--border-color)'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <div style={{
+                      width: '40px',
+                      height: '40px',
+                      borderRadius: '10px',
+                      background: 'var(--primary)',
+                      color: '#FFFFFF',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontWeight: 800,
+                      fontSize: '0.9rem'
+                    }}>
+                      D{day.dayNumber}
+                    </div>
+                    <div>
+                      <h3 style={{ fontSize: '1.2rem', fontFamily: 'Playfair Display, Georgia, serif', color: 'var(--text-primary)' }}>
+                        Day {day.dayNumber} – {day.cityName}, {day.country}
+                      </h3>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{day.dateStr}</span>
+                    </div>
                   </div>
-                  <div>
-                    <h3 style={{ fontSize: '1.2rem', fontFamily: 'Playfair Display, Georgia, serif', color: 'var(--text-primary)' }}>
-                      Day {day.dayNumber} – {day.cityName}, {day.country}
-                    </h3>
-                    <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{day.dateStr}</span>
-                  </div>
-                </div>
 
-                <button onClick={() => setActiveTab('builder')} className="btn btn-secondary btn-sm">
-                  Edit Day
-                </button>
-              </div>
-
-              {day.activities.length === 0 ? (
-                <div style={{ color: 'var(--text-muted)', fontSize: '0.875rem', fontStyle: 'italic' }}>
-                  Free exploration day in {day.cityName}. No fixed scheduled activities.
-                </div>
-              ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                  {day.activities.map((act, i) => (
-                    <div
-                      key={act.id || i}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        padding: '0.85rem 1.1rem',
-                        background: 'var(--bg-input)',
-                        borderRadius: 'var(--radius-sm)',
-                        borderLeft: '4px solid var(--primary)'
-                      }}
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <button
+                      onClick={() => { setSelectedDayIndex(day.dayNumber); setActiveStopId(day.stopId); }}
+                      className="btn btn-secondary btn-sm"
+                      title="Focus on map"
                     >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                        <div style={{
-                          fontWeight: 700,
-                          fontSize: '0.85rem',
-                          color: 'var(--primary)',
-                          minWidth: '75px',
+                      <Eye size={14} /> Focus Map
+                    </button>
+                    <button onClick={() => setActiveTab('builder')} className="btn btn-secondary btn-sm">
+                      Edit Day
+                    </button>
+                  </div>
+                </div>
+
+                {day.activities.length === 0 ? (
+                  <div style={{ color: 'var(--text-muted)', fontSize: '0.875rem', fontStyle: 'italic' }}>
+                    Free exploration day in {day.cityName}. No fixed scheduled activities.
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    {day.activities.map((act, i) => (
+                      <div
+                        key={act.id || i}
+                        style={{
                           display: 'flex',
                           alignItems: 'center',
-                          gap: '0.3rem'
-                        }}>
-                          <Clock size={13} /> {act.startTime || '10:00 AM'}
-                        </div>
-                        <div>
-                          <div style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--text-primary)' }}>
-                            {act.name}
+                          justifyContent: 'space-between',
+                          padding: '0.85rem 1.1rem',
+                          background: 'var(--bg-input)',
+                          borderRadius: 'var(--radius-sm)',
+                          borderLeft: '4px solid var(--primary)'
+                        }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                          <div style={{
+                            fontWeight: 700,
+                            fontSize: '0.85rem',
+                            color: 'var(--primary)',
+                            minWidth: '75px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.3rem'
+                          }}>
+                            <Clock size={13} /> {act.startTime || '10:00 AM'}
                           </div>
-                          <div style={{ fontSize: '0.775rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>
-                            Category: {act.category} • Duration: {act.durationHours}h
+                          <div>
+                            <div style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--text-primary)' }}>
+                              {act.name}
+                            </div>
+                            <div style={{ fontSize: '0.775rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>
+                              Category: {act.category} • Duration: {act.durationHours}h
+                            </div>
                           </div>
                         </div>
-                      </div>
 
-                      <div style={{ fontWeight: 700, color: 'var(--accent-teal)', fontSize: '0.95rem' }}>
-                        ${act.cost}
+                        <div style={{ fontWeight: 700, color: 'var(--accent-teal)', fontSize: '0.95rem' }}>
+                          ${act.cost} <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>[Estimated]</span>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
