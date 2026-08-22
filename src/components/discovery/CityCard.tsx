@@ -73,7 +73,7 @@ export const CityCard: React.FC<CityCardProps> = ({ city, isSaved = false, onAdd
 
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto', paddingTop: '0.75rem', borderTop: '1px solid var(--border-color)' }}>
             <div>
-              <div style={{ fontSize: '0.725rem', color: 'var(--text-muted)' }}>Avg Daily Cost</div>
+              <div style={{ fontSize: '0.725rem', color: 'var(--text-muted)' }}>Avg Daily Cost <span style={{ fontSize: '0.65rem', color: 'var(--primary)', fontWeight: 700 }}>[Estimated]</span></div>
               <div style={{ fontWeight: 700, color: 'var(--accent-teal)', fontSize: '0.95rem', display: 'flex', alignItems: 'center' }}>
                 <DollarSign size={14} /> ${city.averageDailyCost}/day
               </div>

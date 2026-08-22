@@ -52,9 +52,12 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({ activity, onAdd }) =
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto', paddingTop: '0.6rem', borderTop: '1px solid var(--border-color)' }}>
-            <span style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: '1rem' }}>
-              ${activity.cost}
-            </span>
+            <div>
+              <span style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: '1rem' }}>
+                ${activity.cost}
+              </span>
+              <span style={{ fontSize: '0.65rem', color: 'var(--primary)', fontWeight: 700, marginLeft: '0.3rem' }}>[Estimated]</span>
+            </div>
             <button
               onClick={() => onAdd(activity)}
               className="btn btn-secondary btn-sm"
