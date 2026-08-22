@@ -1,72 +1,73 @@
-# GlobeTrotter – Empowering Personalized Travel Planning
+# GlobeTrotter – Immersive RAG AI & Real Vector Map Travel Platform
 
-> A modern, responsive travel planning platform designed to dream, build, and visualize multi-city trip itineraries with dynamic budget tracking and public sharing.
+> A luxury, responsive travel planning platform designed to dream, build, and visualize multi-city trip itineraries with dynamic budget tracking, MapLibre GL JS vector maps, and a RAG-powered Gemini AI assistant.
 
 ![GlobeTrotter Banner](https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1600&q=80)
 
 ---
 
-## ✨ Features
+## ✨ Master Features
 
-- **REST API Ready Architecture**: Modular API abstraction layer (`src/services/api/`) built for seamless REST API & PostgreSQL backend integration.
-- **Light Warm Vanilla Design System**: Clean, elegant travel-tech aesthetic with editorial headings, crisp warm cards, and controlled earthy accents.
-- **13 Complete Application Screens**:
-  - **Authentication**: Login, Signup, Forgot Password with input validation.
-  - **Dashboard**: Personal travel workspace with upcoming trips, destination discovery, and quick metrics.
-  - **Create Trip**: Trip parameters form with date validation and cover gallery selection.
-  - **My Trips**: Travel collection grid with status filtering (`All`, `Upcoming`, `Completed`, `Planning`) and search.
-  - **Itinerary Builder**: Multi-city journey route sequence (`Paris` ↓ `Rome` ↓ `Barcelona`), reorderable stop cards, catalog & custom activities.
-  - **City Discovery**: Global search, region/country filtering, cost index, and bookmarking.
-  - **Activity Search**: Filter by categories (`Sightseeing`, `Food`, `Adventure`, `Culture`, `Entertainment`), duration, and cost.
-  - **Itinerary View**: Structured day-wise travel schedule with List View vs Timeline View toggle.
-  - **Budget & Cost Breakdown**: Financial dashboard with category donut charts, daily spending bar charts, and overbudget alerts.
-  - **Calendar & Timeline**: Chronological vertical timeline with expandable daily schedules.
-  - **Public Sharing**: Public URL generator and one-click "Copy Trip to My Account".
-  - **Profile & Settings**: User preferences, preferred currency/language, saved destinations, and theme toggle.
-  - **Admin Analytics**: Platform adoption metrics, top booked cities, and category interest stats.
+1. **🔒 Authentication-First Security & Data Isolation**:
+   - Mandatory Login/Sign Up entry point for all visitors.
+   - Strict multi-user data isolation: each user accesses strictly their own saved trips, itineraries, budgets, and profile data.
+
+2. **🤖 GlobeTrotter RAG AI Assistant (Google Gemini API)**:
+   - Floating Light Vanilla AI Assistant powered by Google GenAI SDK (`@google/genai`).
+   - RAG (Retrieval-Augmented Generation) pipeline: extracts authorized trip stops, day itineraries, and costs to construct grounded context for Gemini.
+   - Hackathon Demonstration feature: Expandable *"Based on your trip data"* source metadata breakdown below responses.
+
+3. **🗺️ MapLibre GL JS Real Vector Map Engine**:
+   - Real-world vector mapping powered by MapLibre GL JS and CARTO Voyager vector tiles.
+   - 3D camera pitch/bearing controls with smooth `flyTo` camera easing when clicking "Focus Map".
+   - `fitBounds` auto-fitting for multi-stop journeys with dynamic GeoJSON route lines connecting ordered destinations.
+
+4. **🔍 Global Place Search & Geocoding Disambiguation**:
+   - Real-time place search powered by Nominatim OpenStreetMap Geocoding API.
+   - Unambiguous search disambiguation for cities, landmarks, hotels, restaurants, and airports worldwide.
+
+5. **📊 Clean Financial & Budget Dashboard**:
+   - Financial breakdown with clean flat charts (no 3D chart clutter).
+   - Explicit data source badges: `[User Entered]`, `[Calculated]`, `[Estimated]`.
+
+6. **📷 PC & Gallery Profile Photo Upload**:
+   - Native file picker upload allowing users to choose profile pictures directly from their PC or gallery.
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Languages & Tech Stack
 
-- **Frontend**: React 18 + TypeScript + Vite
+- **Primary Language**: TypeScript (Strict Type Safety)
+- **Frontend Core**: React 19 + Vite
+- **Vector Mapping**: MapLibre GL JS (`maplibre-gl`)
+- **Geocoding API**: Nominatim OpenStreetMap Geocoding API
+- **AI / LLM Provider**: Google GenAI SDK (`@google/genai` / Gemini 2.5 Flash)
 - **Icons**: Lucide React (`lucide-react`)
-- **Styling**: Vanilla CSS tokens & custom properties (`src/index.css`)
-- **Typography**: Playfair Display + Plus Jakarta Sans + Outfit
+- **Design System**: Vanilla CSS Custom Properties (`src/index.css`) styled in Light Vanilla (`#F7F4EE`, `#FFFDF9`, `#B86F52`)
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Getting Started Locally
 
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/YOUR_USERNAME/globetrotter.git
-   cd globetrotter
-   ```
+```bash
+# Clone the repository
+git clone https://github.com/praveengounder9-droid/Odoo_PraveenHarpal.git
 
-2. **Install dependencies**:
-   ```bash
-   npm install
-   ```
+# Navigate to project directory
+cd Odoo_PraveenHarpal
 
-3. **Start development server**:
-   ```bash
-   npm run dev
-   ```
+# Install dependencies
+npm install
 
-4. **Build production bundle**:
-   ```bash
-   npm run build
-   ```
+# Start local development server
+npm run dev
 
----
-
-## 🔌 Connecting to a Live Backend
-
-By default, the application runs using local state fallback (`VITE_USE_MOCK=true`).
-To connect to your live PostgreSQL REST API backend, set the environment variable in `.env`:
-
-```env
-VITE_API_URL=https://your-backend-api.com/api
-VITE_USE_MOCK=false
+# Build for production
+npm run build
 ```
+
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
