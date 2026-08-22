@@ -43,7 +43,14 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ setActiveTab }) =>
 
   const handleGeocodedPlaceSelect = async (place: GeocodedPlace) => {
     if (trips.length > 0 && activeTrip) {
-      await addStopToTrip(activeTrip.id, place.cityName, activeTrip.startDate, activeTrip.endDate);
+      await addStopToTrip(activeTrip.id, place.cityName, activeTrip.startDate, activeTrip.endDate, {
+        lat: place.lat,
+        lng: place.lng,
+        country: place.country,
+        displayName: place.displayName,
+        category: place.category,
+        cityName: place.cityName
+      });
       setActiveTab('builder');
     } else {
       setActiveTab('create-trip');

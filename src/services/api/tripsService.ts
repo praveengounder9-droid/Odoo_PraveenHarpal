@@ -223,30 +223,50 @@ export const tripsService = {
   },
 
   // Stop Management
-  async addStop(tripId: string, cityId: string, startDate: string, endDate: string): Promise<Trip> {
-    return apiClient.post(`/trips/${tripId}/stops`, { cityId, startDate, endDate }, () => {
+  async addStop(
+    tripId: string,
+    cityIdOrName: string,
+    startDate: string,
+    endDate: string,
+    geoData?: {
+      lat?: number;
+      lng?: number;
+      country?: string;
+      displayName?: string;
+      category?: string;
+      cityName?: string;
+    }
+  ): Promise<Trip> {
+    return apiClient.post(`/trips/${tripId}/stops`, { cityIdOrName, startDate, endDate, geoData }, () => {
       const currentUserId = getCurrentUserIdFromSession();
       const allTrips = getTripsDB();
       const trip = allTrips.find(t => t.id === tripId);
       if (!trip) throw new Error('Trip not found');
       if (trip.userId !== currentUserId) throw new Error('Unauthorized');
 
-      const city = INITIAL_CITIES.find(c => c.id === cityId);
-      if (!city) throw new Error('City not found');
+      const knownCity = INITIAL_CITIES.find(c => c.id === cityIdOrName || c.name.toLowerCase() === cityIdOrName.toLowerCase());
+
+      const cityName = geoData?.cityName || knownCity?.name || cityIdOrName;
+      const country = geoData?.country || knownCity?.country || 'World';
+      const coverImage = knownCity?.coverImage || 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80';
 
       const newStop: TripStop = {
         id: `stp-${Date.now()}`,
         tripId,
-        cityId,
-        cityName: city.name,
-        country: city.country,
-        coverImage: city.coverImage,
+        cityId: knownCity?.id || `geo-${Date.now()}`,
+        cityName,
+        country,
+        coverImage,
         startDate,
         endDate,
         orderIndex: trip.stops.length,
+        lat: geoData?.lat,
+        lng: geoData?.lng,
+        displayName: geoData?.displayName,
+        category: geoData?.category,
         activities: [],
-        stayCost: city.averageDailyCost * 3,
-        transportCost: 150,
+        stayCost: knownCity ? knownCity.averageDailyCost * 3 : 300,
+transportCost: 150,
       };
 
       trip.stops.push(newStop);

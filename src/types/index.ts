@@ -64,6 +64,10 @@ export interface TripStop {
   startDate: string;
   endDate: string;
   orderIndex: number;
+  lat?: number;
+  lng?: number;
+  displayName?: string;
+  category?: string;
   activities: TripActivity[];
   stayCost: number;
   transportCost: number;

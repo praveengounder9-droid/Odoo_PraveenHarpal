@@ -34,7 +34,14 @@ export const ItineraryViewPage: React.FC<ItineraryViewPageProps> = ({ setActiveT
 
   const handleGeocodedPlaceSelect = async (place: GeocodedPlace) => {
     if (activeTrip) {
-      await addStopToTrip(activeTrip.id, place.cityName, activeTrip.startDate, activeTrip.endDate);
+      await addStopToTrip(activeTrip.id, place.cityName, activeTrip.startDate, activeTrip.endDate, {
+        lat: place.lat,
+        lng: place.lng,
+        country: place.country,
+        displayName: place.displayName,
+        category: place.category,
+        cityName: place.cityName
+      });
       setActiveTab('builder');
     }
   };

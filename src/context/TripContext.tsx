@@ -12,7 +12,20 @@ interface TripContextType {
   createTrip: (data: Omit<Trip, 'id' | 'createdAt' | 'stops' | 'shareToken'>) => Promise<Trip>;
   updateTrip: (id: string, updates: Partial<Trip>) => Promise<Trip>;
   deleteTrip: (id: string) => Promise<void>;
-  addStopToTrip: (tripId: string, cityId: string, startDate: string, endDate: string) => Promise<Trip>;
+  addStopToTrip: (
+    tripId: string,
+    cityIdOrName: string,
+    startDate: string,
+    endDate: string,
+    geoData?: {
+      lat?: number;
+      lng?: number;
+      country?: string;
+      displayName?: string;
+      category?: string;
+      cityName?: string;
+    }
+  ) => Promise<Trip>;
   removeStopFromTrip: (tripId: string, stopId: string) => Promise<Trip>;
   reorderTripStops: (tripId: string, stopIdsInOrder: string[]) => Promise<Trip>;
   addActivityToStop: (tripId: string, stopId: string, activityData: Omit<TripActivity, 'id' | 'stopId'>) => Promise<Trip>;
@@ -68,8 +81,21 @@ export const TripProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const addStopToTrip = async (tripId: string, cityId: string, startDate: string, endDate: string) => {
-    const updated = await tripsService.addStop(tripId, cityId, startDate, endDate);
+  const addStopToTrip = async (
+    tripId: string,
+    cityIdOrName: string,
+    startDate: string,
+    endDate: string,
+    geoData?: {
+      lat?: number;
+      lng?: number;
+      country?: string;
+      displayName?: string;
+      category?: string;
+      cityName?: string;
+    }
+  ) => {
+    const updated = await tripsService.addStop(tripId, cityIdOrName, startDate, endDate, geoData);
     await refreshTrips();
     return updated;
   };

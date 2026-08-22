@@ -27,9 +27,12 @@ export const RealMapEngine: React.FC<RealMapEngineProps> = ({
   const [mapError, setMapError] = useState(false);
   const markersRef = useRef<any[]>([]);
 
-  // Map user stops to real geographic points [lng, lat]
+  // Map user stops to real numeric geographic points [lng, lat]
   const stopPoints = stops.map((stop, idx) => {
-    const geo = getCityCoordinates(stop.cityId || stop.cityName);
+    const geo = (stop.lat !== undefined && stop.lng !== undefined && !isNaN(Number(stop.lat)) && !isNaN(Number(stop.lng)))
+      ? { lat: Number(stop.lat), lng: Number(stop.lng) }
+      : getCityCoordinates(stop.cityId || stop.cityName);
+
     return {
       ...stop,
       lat: geo.lat,
@@ -132,7 +135,7 @@ export const RealMapEngine: React.FC<RealMapEngineProps> = ({
 
       el.addEventListener('click', () => {
         if (onSelectStop) onSelectStop(pt);
-        map.flyTo({ center: [pt.lng, pt.lat], zoom: 9, pitch: 45, duration: 1500 });
+        map.flyTo({ center: [pt.lng, pt.lat], zoom: 10, pitch: 45, duration: 1500, essential: true });
       });
 
       const marker = new maplibregl.Marker({ element: el })
@@ -141,6 +144,7 @@ export const RealMapEngine: React.FC<RealMapEngineProps> = ({
           <div style="padding: 4px; font-family: Outfit, sans-serif;">
             <strong style="color: #29231F; font-size: 14px;">Day ${pt.index}: ${pt.cityName}</strong>
             <p style="margin: 4px 0 0; color: #756C62; font-size: 12px;">${pt.country}</p>
+            <p style="margin: 2px 0 0; color: #B86F52; font-size: 11px; font-weight: 600;">Lat: ${pt.lat.toFixed(4)}, Lng: ${pt.lng.toFixed(4)}</p>
           </div>
         `))
         .addTo(map);
@@ -195,7 +199,30 @@ export const RealMapEngine: React.FC<RealMapEngineProps> = ({
     }
   }, [stopPoints, mapLoaded, onSelectStop]);
 
-  // Handle activeStopId camera flyTo transition
+  // Auto Fit Bounds for multi-destination trips
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !mapLoaded || stopPoints.length === 0) return;
+
+    if (stopPoints.length >= 2) {
+      try {
+        const bounds = new (maplibregl as any).LngLatBounds();
+        stopPoints.forEach(pt => bounds.extend([pt.lng, pt.lat]));
+        map.fitBounds(bounds, { padding: 70, maxZoom: 12, duration: 1400 });
+      } catch (err) {
+        console.warn('MapLibre fitBounds error', err);
+      }
+    } else if (stopPoints.length === 1) {
+      map.flyTo({
+        center: [stopPoints[0].lng, stopPoints[0].lat],
+        zoom: 9,
+        pitch: 35,
+        duration: 1200
+      });
+    }
+  }, [stopPoints.length, mapLoaded]);
+
+  // Handle activeStopId camera flyTo transition (Focus Map feature)
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !mapLoaded || !activeStopId) return;
@@ -206,7 +233,8 @@ export const RealMapEngine: React.FC<RealMapEngineProps> = ({
         center: [targetStop.lng, targetStop.lat],
         zoom: 10,
         pitch: 45,
-        duration: 1800
+        duration: 1800,
+        essential: true
       });
     }
   }, [activeStopId, mapLoaded]);
