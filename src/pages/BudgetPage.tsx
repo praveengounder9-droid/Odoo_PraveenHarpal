@@ -6,7 +6,6 @@ import { budgetService } from '../services/api/budgetService';
 import type { ExpenseSummary } from '../types';
 import { CategoryDonutChart } from '../components/budget/CategoryDonutChart';
 import { DailyExpenseBarChart } from '../components/budget/DailyExpenseBarChart';
-import { Budget3DChart } from '../components/3d/Budget3DChart';
 import { EmptyState } from '../components/common/EmptyState';
 
 interface BudgetPageProps {
@@ -101,32 +100,26 @@ export const BudgetPage: React.FC<BudgetPageProps> = ({ setActiveTab }) => {
         </div>
       )}
 
-      {/* Metrics Bar with Data Integrity Badges */}
+      {/* Metrics Bar */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem' }}>
         <div className="glass-card" style={{ padding: '1.2rem', background: 'var(--bg-card)' }}>
-          <div style={{ fontSize: '0.785rem', color: 'var(--text-muted)' }}>
-            Target Estimated Budget <span style={{ fontSize: '0.7rem', color: 'var(--primary)', fontWeight: 700 }}>[User Entered]</span>
-          </div>
+          <div style={{ fontSize: '0.785rem', color: 'var(--text-muted)' }}>Target Estimated Budget</div>
           <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', marginTop: '0.2rem' }}>
             {currencySymbol}{budgetData.totalEstimatedBudget}
           </div>
-          <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Entered by user</span>
+          <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Set during trip creation</span>
         </div>
 
         <div className="glass-card" style={{ padding: '1.2rem', background: 'var(--bg-card)' }}>
-          <div style={{ fontSize: '0.785rem', color: 'var(--text-muted)' }}>
-            Total Calculated Expense <span style={{ fontSize: '0.7rem', color: 'var(--accent-teal)', fontWeight: 700 }}>[Calculated]</span>
-          </div>
+          <div style={{ fontSize: '0.785rem', color: 'var(--text-muted)' }}>Total Calculated Expense</div>
           <div style={{ fontSize: '1.5rem', fontWeight: 800, color: budgetData.totalActualCost > budgetData.totalEstimatedBudget ? 'var(--accent-rose)' : 'var(--accent-teal)', marginTop: '0.2rem' }}>
             {currencySymbol}{budgetData.totalActualCost}
           </div>
-          <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Sum of stay & activity costs</span>
+          <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>All categories combined</span>
         </div>
 
         <div className="glass-card" style={{ padding: '1.2rem', background: 'var(--bg-card)' }}>
-          <div style={{ fontSize: '0.785rem', color: 'var(--text-muted)' }}>
-            Average Daily Cost <span style={{ fontSize: '0.7rem', color: 'var(--accent-champagne)', fontWeight: 700 }}>[Estimated]</span>
-          </div>
+          <div style={{ fontSize: '0.785rem', color: 'var(--text-muted)' }}>Average Daily Cost</div>
           <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--primary)', marginTop: '0.2rem' }}>
             {currencySymbol}{avgCostPerDay}/day
           </div>
@@ -134,9 +127,7 @@ export const BudgetPage: React.FC<BudgetPageProps> = ({ setActiveTab }) => {
         </div>
 
         <div className="glass-card" style={{ padding: '1.2rem', background: 'var(--bg-card)' }}>
-          <div style={{ fontSize: '0.785rem', color: 'var(--text-muted)' }}>
-            Budget Surplus / Deficit <span style={{ fontSize: '0.7rem', color: 'var(--accent-teal)', fontWeight: 700 }}>[Calculated]</span>
-          </div>
+          <div style={{ fontSize: '0.785rem', color: 'var(--text-muted)' }}>Budget Surplus / Deficit</div>
           <div style={{ fontSize: '1.5rem', fontWeight: 800, color: budgetVariance >= 0 ? 'var(--accent-teal)' : 'var(--accent-rose)', marginTop: '0.2rem' }}>
             {budgetVariance >= 0 ? `+${currencySymbol}${budgetVariance}` : `-${currencySymbol}${Math.abs(budgetVariance)}`}
           </div>
@@ -144,17 +135,6 @@ export const BudgetPage: React.FC<BudgetPageProps> = ({ setActiveTab }) => {
             {budgetVariance >= 0 ? 'Under target budget' : 'Exceeds total target'}
           </span>
         </div>
-      </div>
-
-      {/* 3D Financial Cylinder Chart Section */}
-      <div className="glass-card" style={{ padding: '1.5rem', background: 'var(--bg-card)' }}>
-        <h3 style={{ fontSize: '1.15rem', color: 'var(--text-primary)', marginBottom: '0.5rem', fontFamily: 'Playfair Display, serif' }}>
-          Interactive 3D Category Spending Visualizer
-        </h3>
-        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
-          3D cylinders elevated proportionally to category expenses [Calculated / User Entered]
-        </p>
-        <Budget3DChart categories={budgetData.byCategory} height="300px" />
       </div>
 
       {/* Standard Charts Grid */}
