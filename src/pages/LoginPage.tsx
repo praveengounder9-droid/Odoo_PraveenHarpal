@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Compass, Mail, Lock, User as UserIcon, ArrowRight, UserCheck } from 'lucide-react';
+import { Compass, Mail, Lock, User as UserIcon, ArrowRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { Input } from '../components/common/Input';
 import { Button } from '../components/common/Button';
@@ -43,17 +43,6 @@ export const LoginPage: React.FC = () => {
       }
     } catch (err: any) {
       setError(err?.message || 'Authentication failed. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleQuickLogin = async (quickEmail: string) => {
-    setIsLoading(true);
-    try {
-      await login(quickEmail, 'password123');
-    } catch (err: any) {
-      setError(err?.message || 'Quick login failed');
     } finally {
       setIsLoading(false);
     }
@@ -120,30 +109,7 @@ export const LoginPage: React.FC = () => {
           </p>
         </div>
 
-        {/* Quick Demo Accounts Bar */}
-        <div style={{ marginBottom: '1.5rem', padding: '0.85rem', background: 'var(--bg-subtle)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)' }}>
-          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-            <UserCheck size={13} style={{ color: 'var(--primary)' }} /> Quick Multi-User Test Accounts:
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
-            <button
-              type="button"
-              onClick={() => handleQuickLogin('rahul@globetrotter.io')}
-              className="btn btn-secondary btn-sm"
-              style={{ fontSize: '0.75rem', justifyContent: 'center' }}
-            >
-              User A (Rahul)
-            </button>
-            <button
-              type="button"
-              onClick={() => handleQuickLogin('priya@globetrotter.io')}
-              className="btn btn-secondary btn-sm"
-              style={{ fontSize: '0.75rem', justifyContent: 'center' }}
-            >
-              User B (Priya)
-            </button>
-          </div>
-        </div>
+
 
         {error && (
           <div style={{
