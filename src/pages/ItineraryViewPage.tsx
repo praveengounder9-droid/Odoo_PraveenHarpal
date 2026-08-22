@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
-import { Calendar, MapPin, Clock, List, LayoutGrid, Share2, Printer, Navigation, Eye } from 'lucide-react';
+import { Calendar, MapPin, Clock, List, LayoutGrid, Share2, Printer, Navigation, Eye, Search } from 'lucide-react';
 import { useTrips } from '../context/TripContext';
 import { EmptyState } from '../components/common/EmptyState';
-import { CinematicTravelMap } from '../components/map/CinematicTravelMap';
+import { RealMapEngine } from '../components/map/RealMapEngine';
+import { DestinationSearchModal } from '../components/map/DestinationSearchModal';
+import type { GeocodedPlace } from '../services/api/geocodingService';
 
 interface ItineraryViewPageProps {
   setActiveTab: (tab: string) => void;
 }
 
 export const ItineraryViewPage: React.FC<ItineraryViewPageProps> = ({ setActiveTab }) => {
-  const { activeTrip } = useTrips();
+  const { activeTrip, addStopToTrip } = useTrips();
   const [viewMode, setViewMode] = useState<'list' | 'timeline'>('list');
   const [selectedDayIndex, setSelectedDayIndex] = useState<number | null>(null);
   const [activeStopId, setActiveStopId] = useState<string | null>(null);
+  const [showSearchModal, setShowSearchModal] = useState(false);
 
   if (!activeTrip) {
     return (
@@ -28,6 +31,13 @@ export const ItineraryViewPage: React.FC<ItineraryViewPageProps> = ({ setActiveT
       />
     );
   }
+
+  const handleGeocodedPlaceSelect = async (place: GeocodedPlace) => {
+    if (activeTrip) {
+      await addStopToTrip(activeTrip.id, place.cityName, activeTrip.startDate, activeTrip.endDate);
+      setActiveTab('builder');
+    }
+  };
 
   let dayCounter = 1;
   const dayWiseItinerary: Array<{
@@ -66,6 +76,13 @@ export const ItineraryViewPage: React.FC<ItineraryViewPageProps> = ({ setActiveT
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
       
+      {/* Real-time Search Modal */}
+      <DestinationSearchModal
+        isOpen={showSearchModal}
+        onClose={() => setShowSearchModal(false)}
+        onSelectPlace={handleGeocodedPlaceSelect}
+      />
+
       {/* Header Bar */}
       <div className="glass-panel" style={{ padding: '2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', background: 'var(--bg-card)' }}>
         <div>
@@ -80,6 +97,9 @@ export const ItineraryViewPage: React.FC<ItineraryViewPageProps> = ({ setActiveT
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <button onClick={() => setShowSearchModal(true)} className="btn btn-primary btn-sm">
+            <Search size={15} /> + Add Destination
+          </button>
           <div style={{ display: 'flex', background: 'var(--bg-input)', padding: '0.25rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)' }}>
             <button
               onClick={() => setViewMode('list')}
@@ -120,51 +140,50 @@ export const ItineraryViewPage: React.FC<ItineraryViewPageProps> = ({ setActiveT
           <button onClick={() => window.print()} className="btn btn-secondary btn-sm" title="Print itinerary">
             <Printer size={15} />
           </button>
-          <button onClick={() => setActiveTab('shared')} className="btn btn-primary btn-sm">
-            <Share2 size={15} /> Share Plan
+          <button onClick={() => setActiveTab('shared')} className="btn btn-secondary btn-sm">
+            <Share2 size={15} /> Share
           </button>
         </div>
       </div>
 
-      {/* Map + Itinerary Split Workspace */}
-      {activeTrip.stops.length > 0 && (
-        <div className="glass-card" style={{ padding: '1.5rem', background: 'var(--bg-card)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.75rem' }}>
-            <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-              <Navigation size={16} style={{ color: 'var(--primary)' }} /> Synchronized Travel Map Workspace
-            </div>
-
-            {/* Day-by-Day Spatial Filter Selector */}
-            <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap' }}>
-              <button
-                type="button"
-                onClick={() => setSelectedDayIndex(null)}
-                className={`btn btn-xs ${selectedDayIndex === null ? 'btn-primary' : 'btn-secondary'}`}
-              >
-                All Days
-              </button>
-              {dayWiseItinerary.map(d => (
-                <button
-                  key={d.dayNumber}
-                  type="button"
-                  onClick={() => setSelectedDayIndex(d.dayNumber)}
-                  className={`btn btn-xs ${selectedDayIndex === d.dayNumber ? 'btn-primary' : 'btn-secondary'}`}
-                >
-                  Day {d.dayNumber} ({d.cityName})
-                </button>
-              ))}
-            </div>
+      {/* MapLibre Real Vector Map + Itinerary Split Workspace */}
+      <div className="glass-card" style={{ padding: '1.5rem', background: 'var(--bg-card)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.75rem' }}>
+          <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+            <Navigation size={16} style={{ color: 'var(--primary)' }} /> Interactive Real Vector Map (MapLibre GL JS)
           </div>
 
-          <CinematicTravelMap
-            stops={activeTrip.stops}
-            activeStopId={activeStopId}
-            onSelectStop={stop => setActiveStopId(stop.id)}
-            height="380px"
-            selectedDay={selectedDayIndex}
-          />
+          {/* Day-by-Day Spatial Filter Selector */}
+          <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap' }}>
+            <button
+              type="button"
+              onClick={() => setSelectedDayIndex(null)}
+              className={`btn btn-xs ${selectedDayIndex === null ? 'btn-primary' : 'btn-secondary'}`}
+            >
+              All Days
+            </button>
+            {dayWiseItinerary.map(d => (
+              <button
+                key={d.dayNumber}
+                type="button"
+                onClick={() => setSelectedDayIndex(d.dayNumber)}
+                className={`btn btn-xs ${selectedDayIndex === d.dayNumber ? 'btn-primary' : 'btn-secondary'}`}
+              >
+                Day {d.dayNumber} ({d.cityName})
+              </button>
+            ))}
+          </div>
         </div>
-      )}
+
+        <RealMapEngine
+          stops={activeTrip.stops}
+          activeStopId={activeStopId}
+          onSelectStop={stop => setActiveStopId(stop.id)}
+          onOpenSearchModal={() => setShowSearchModal(true)}
+          height="420px"
+          selectedDay={selectedDayIndex}
+        />
+      </div>
 
       {dayWiseItinerary.length === 0 ? (
         <EmptyState
@@ -227,7 +246,7 @@ export const ItineraryViewPage: React.FC<ItineraryViewPageProps> = ({ setActiveT
                     <button
                       onClick={() => { setSelectedDayIndex(day.dayNumber); setActiveStopId(day.stopId); }}
                       className="btn btn-secondary btn-sm"
-                      title="Focus on map"
+                      title="Focus map"
                     >
                       <Eye size={14} /> Focus Map
                     </button>

@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { PlusCircle, Compass, Calendar, MapPin, TrendingUp, ArrowRight, DollarSign, Sparkles } from 'lucide-react';
+import { PlusCircle, Compass, Calendar, MapPin, TrendingUp, ArrowRight, DollarSign, Sparkles, Search } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTrips } from '../context/TripContext';
 import { citiesService } from '../services/api/citiesService';
 import type { City } from '../types';
 import { TripCard } from '../components/trips/TripCard';
 import { CityCard } from '../components/discovery/CityCard';
-import { CinematicScrollExperience } from '../components/story/CinematicScrollExperience';
+import { RealMapEngine } from '../components/map/RealMapEngine';
+import { DestinationSearchModal } from '../components/map/DestinationSearchModal';
+import type { GeocodedPlace } from '../services/api/geocodingService';
 
 interface DashboardPageProps {
   setActiveTab: (tab: string) => void;
@@ -17,6 +19,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ setActiveTab }) =>
   const { user } = useAuth();
   const { trips, activeTrip, deleteTrip, setActiveTripId, addStopToTrip } = useTrips();
   const [popularCities, setPopularCities] = useState<City[]>([]);
+  const [showSearchModal, setShowSearchModal] = useState(false);
 
   useEffect(() => {
     citiesService.getCities('', 'All', 'All').then(cities => {
@@ -38,9 +41,25 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ setActiveTab }) =>
     }
   };
 
+  const handleGeocodedPlaceSelect = async (place: GeocodedPlace) => {
+    if (trips.length > 0 && activeTrip) {
+      await addStopToTrip(activeTrip.id, place.cityName, activeTrip.startDate, activeTrip.endDate);
+      setActiveTab('builder');
+    } else {
+      setActiveTab('create-trip');
+    }
+  };
+
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '2.25rem' }}>
       
+      {/* Real-time Destination Search Modal */}
+      <DestinationSearchModal
+        isOpen={showSearchModal}
+        onClose={() => setShowSearchModal(false)}
+        onSelectPlace={handleGeocodedPlaceSelect}
+      />
+
       {/* Hero Welcome Header */}
       <div className="glass-panel" style={{
         padding: '2rem 2.25rem',
@@ -67,37 +86,38 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ setActiveTab }) =>
         </div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.85rem' }}>
           <button
-            onClick={() => setActiveTab('create-trip')}
+            onClick={() => setShowSearchModal(true)}
             className="btn btn-primary btn-lg"
+          >
+            <Search size={18} />
+            <span>+ Add Destination</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('create-trip')}
+            className="btn btn-secondary btn-lg"
           >
             <PlusCircle size={18} />
             <span>Plan New Trip</span>
           </button>
-          <button
-            onClick={() => setActiveTab('cities')}
-            className="btn btn-secondary btn-lg"
-          >
-            <Compass size={18} />
-            <span>Explore Cities</span>
-          </button>
         </div>
       </div>
 
-      {/* Cinematic Map Scroll Storytelling Workspace */}
+      {/* Real MapLibre Vector Map Engine Hero Workspace */}
       <div>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
           <div>
             <h3 style={{ fontSize: '1.35rem', fontFamily: 'Playfair Display, Georgia, serif', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <Sparkles size={18} style={{ color: 'var(--primary)' }} />
-              Cinematic Travel Map Workspace
+              Interactive Travel Map Engine (MapLibre GL JS)
             </h3>
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Interactive spatial routes & destination discovery</p>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Real vector tiles, 3D camera controls & per-user dynamic route lines</p>
           </div>
         </div>
-        <CinematicScrollExperience
+
+        <RealMapEngine
           stops={activeTrip?.stops || []}
-          onPlanTrip={() => setActiveTab('create-trip')}
-          onExploreCities={() => setActiveTab('cities')}
+          onOpenSearchModal={() => setShowSearchModal(true)}
+          height="450px"
         />
       </div>
 
