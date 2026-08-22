@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { User as UserIcon, Mail, Bookmark, ShieldAlert, Trash2 } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { User as UserIcon, Mail, Bookmark, ShieldAlert, Trash2, Camera, Upload } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { profileService } from '../services/api/profileService';
 import { citiesService } from '../services/api/citiesService';
@@ -10,6 +10,7 @@ import { Modal } from '../components/common/Modal';
 
 export const ProfilePage: React.FC = () => {
   const { user, updateProfileState, logout } = useAuth();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [name, setName] = useState(user?.name || '');
   const [email, setEmail] = useState(user?.email || '');
@@ -45,6 +46,28 @@ export const ProfilePage: React.FC = () => {
     }
   }, [user]);
 
+  const handleAvatarFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (uploadEvent) => {
+        const result = uploadEvent.target?.result as string;
+        if (result) {
+          setAvatarUrl(result);
+          // Instantly trigger profile update with new avatar
+          if (user) {
+            const updated = { ...user, avatarUrl: result };
+            updateProfileState(updated);
+            profileService.updateProfile({ avatarUrl: result }).catch(console.error);
+            setSuccessMsg('Profile picture updated successfully!');
+            setTimeout(() => setSuccessMsg(''), 3000);
+          }
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleProfileSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
@@ -72,30 +95,77 @@ export const ProfilePage: React.FC = () => {
 
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem', maxWidth: '900px', margin: '0 auto' }}>
+      {/* Hidden File Picker Input for PC/Gallery Upload */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        accept="image/*"
+        style={{ display: 'none' }}
+        onChange={handleAvatarFileSelect}
+      />
+
       <div>
         <h2 style={{ fontSize: '1.8rem', fontFamily: 'Playfair Display, Georgia, serif', color: 'var(--text-primary)' }}>Account Settings & Preferences</h2>
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-          Manage your personal travel profile, currency, language, and saved destinations.
+          Manage your personal travel profile, upload profile photo, currency, language, and saved destinations.
         </p>
       </div>
 
       <form onSubmit={handleProfileSave} className="glass-panel" style={{ padding: '2rem', background: 'var(--bg-card)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '2rem', paddingBottom: '1.5rem', borderBottom: '1px solid var(--border-color)' }}>
-          <img
-            src={avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80'}
-            alt="Avatar"
-            style={{ width: '80px', height: '80px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--primary)' }}
-          />
+          {/* Clickable Profile Photo Container with Upload Overlay */}
+          <div
+            onClick={() => fileInputRef.current?.click()}
+            style={{
+              position: 'relative',
+              width: '90px',
+              height: '90px',
+              borderRadius: '50%',
+              cursor: 'pointer',
+              overflow: 'hidden',
+              border: '3px solid var(--primary)',
+              boxShadow: '0 4px 14px rgba(184, 111, 82, 0.2)'
+            }}
+            title="Click to upload new photo from gallery or PC"
+          >
+            <img
+              src={avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80'}
+              alt="Avatar"
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
+            <div style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'rgba(31, 26, 23, 0.55)',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#FFFFFF',
+              opacity: 0.85,
+              transition: 'opacity 0.2s ease',
+              fontSize: '0.7rem',
+              fontWeight: 600,
+              gap: '0.2rem'
+            }}>
+              <Camera size={18} />
+              <span>Change</span>
+            </div>
+          </div>
+
           <div style={{ flex: 1 }}>
-            <h3 style={{ fontSize: '1.25rem', fontFamily: 'Playfair Display, Georgia, serif', color: 'var(--text-primary)' }}>{name}</h3>
+            <h3 style={{ fontSize: '1.3rem', fontFamily: 'Playfair Display, Georgia, serif', color: 'var(--text-primary)' }}>{name}</h3>
             <span style={{ fontSize: '0.825rem', color: 'var(--text-muted)' }}>Role: {user?.role ? user.role.toUpperCase() : 'USER'}</span>
-            <div style={{ marginTop: '0.5rem' }}>
-              <Input
-                placeholder="Avatar Image URL..."
-                value={avatarUrl}
-                onChange={e => setAvatarUrl(e.target.value)}
-                style={{ padding: '0.4rem 0.8rem', fontSize: '0.825rem' }}
-              />
+            <div style={{ marginTop: '0.6rem' }}>
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="btn btn-secondary btn-sm"
+                style={{ fontSize: '0.8rem', gap: '0.4rem' }}
+              >
+                <Upload size={14} style={{ color: 'var(--primary)' }} />
+                <span>Upload Photo from PC / Gallery</span>
+              </button>
             </div>
           </div>
         </div>
@@ -152,7 +222,7 @@ export const ProfilePage: React.FC = () => {
         </div>
 
         {successMsg && (
-          <div style={{ padding: '0.75rem', background: 'rgba(74, 124, 116, 0.1)', color: 'var(--accent-teal)', borderRadius: 'var(--radius-sm)', fontSize: '0.85rem', marginBottom: '1rem' }}>
+          <div style={{ padding: '0.75rem', background: 'rgba(74, 124, 116, 0.1)', color: 'var(--accent-teal)', borderRadius: 'var(--radius-sm)', fontSize: '0.85rem', marginBottom: '1rem', fontWeight: 600 }}>
             {successMsg}
           </div>
         )}
