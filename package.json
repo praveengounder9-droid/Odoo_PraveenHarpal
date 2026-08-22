@@ -12,6 +12,7 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@google/genai": "^2.18.0",
     "lucide-react": "^1.33.0",
     "maplibre-gl": "^6.5.0",
     "react": "^19.2.8",

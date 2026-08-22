@@ -7,6 +7,9 @@ import { Sidebar } from './components/layout/Sidebar';
 import { Navbar } from './components/layout/Navbar';
 import { MobileNav } from './components/layout/MobileNav';
 
+// AI Assistant
+import { AiChatWidget } from './components/chat/AiChatWidget';
+
 // Pages
 import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
@@ -94,6 +97,9 @@ const MainAppContent: React.FC = () => {
       </div>
 
       <MobileNav activeTab={activeTab} setActiveTab={setActiveTab} />
+
+      {/* Floating RAG AI Travel Assistant Widget */}
+      <AiChatWidget />
     </div>
   );
 };
